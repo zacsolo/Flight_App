@@ -26,18 +26,27 @@ module.exports = {
           inboundpartialdate: '2020-12-01',
         },
       });
-      const cheapFlight = data.Quotes.reduce((acc, currFlight) => {
+      const lowestPriceAvailable = data.Quotes.reduce((acc, currFlight) => {
         if (acc.MinPrice > currFlight.MinPrice) {
           acc = currFlight;
         }
         return acc;
       });
-      console.log(cheapFlight);
-      return {
-        price: cheapFlight.MinPrice,
-        direct: cheapFlight.Direct,
-        departureDate: cheapFlight.OutboundLeg.DepartureDate,
-      };
+      console.log(data.Quotes);
+      console.log('LOWEST PRICE', lowestPriceAvailable);
+
+      const cheapFlights = data.Quotes.filter(
+        (flight) => flight.MinPrice === lowestPriceAvailable.MinPrice
+      );
+      console.log('CHEAPEST FLIGHTS___', cheapFlights);
+
+      return cheapFlights.map((flight) => {
+        return {
+          price: flight.MinPrice,
+          direct: flight.Direct,
+          departureDate: flight.OutboundLeg.DepartureDate,
+        };
+      });
     },
   },
 };

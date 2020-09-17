@@ -6,7 +6,7 @@ const typeDefs = gql`
       startingAirport: String!
       endingAirport: String!
       outboundDate: String!
-    ): Flight
+    ): [Flight]
   }
   type User {
     id: ID!
