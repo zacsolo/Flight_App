@@ -12,21 +12,6 @@ const server = new ApolloServer({
   context: ({ req }) => ({ req }),
 });
 
-const isEmpty = (str) => {
-  return str.trim() === '' ? (error.str = 'cannot be empty') : null;
-};
-
-const loginValidation = (str) => {
-  const errors = {};
-  isEmpty(str);
-  return {
-    errors,
-    valid: errors.length < 1 ? true : false,
-  };
-};
-
-console.log(loginValidation(''));
-
 mongoose
   .connect(MONGODB_URI, {
     useNewUrlParser: true,
