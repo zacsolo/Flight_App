@@ -1,8 +1,9 @@
 const userResolver = require('../resolvers/userResolver');
+const flightResolver = require('./flightResolver');
 
 const resolvers = {
   Query: {
-    test: () => 'test resolver',
+    ...flightResolver.Query,
   },
   Mutation: {
     ...userResolver.Mutation,

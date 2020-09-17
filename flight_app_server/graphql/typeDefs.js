@@ -2,7 +2,11 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
   type Query {
-    test: String
+    getCheapestFlight(
+      startingAirport: String!
+      endingAirport: String!
+      outboundDate: String!
+    ): Flight
   }
   type User {
     id: ID!
@@ -13,6 +17,12 @@ const typeDefs = gql`
     createdAt: String!
     token: String!
   }
+  type Flight {
+    price: Int
+    direct: Boolean
+    departureDate: String
+  }
+
   type Mutation {
     signup(
       firstName: String!

@@ -54,6 +54,7 @@ module.exports = {
       });
       return { ...savedUser._doc, id: savedUser._id, token };
     },
+
     //--- Login for Existing User ---
     login: async (root, args) => {
       const { email, password } = args;
@@ -64,7 +65,6 @@ module.exports = {
       }
 
       const user = await User.findOne({ email });
-      console.log(user);
 
       if (!user) {
         throw new UserInputError('Account not found', {
@@ -86,6 +86,7 @@ module.exports = {
       const token = jwt.sign(userForToken, process.env.SECRET, {
         expiresIn: '1h',
       });
+
       return {
         firstName: user.firstName,
         lastName: user.lastName,
