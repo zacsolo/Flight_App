@@ -1,5 +1,6 @@
 const { UserInputError } = require('apollo-server');
 const axios = require('axios');
+const { flightValidation } = require('../../utils/flightValidation');
 
 //
 //
@@ -25,6 +26,17 @@ module.exports = {
         outboundDate,
         inboundDate,
       } = args;
+
+      const { errors, valid } = flightValidation(
+        startingAirport,
+        endingAirport,
+        outboundDate,
+        inboundDate
+      );
+      //---If any args are invalid format
+      if (!valid) {
+        throw new UserInputError('Errors', { errors });
+      }
 
       //--- Dynamic URL based on if there is a return flight date selected
       let url = '';
