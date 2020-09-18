@@ -8,6 +8,7 @@ const typeDefs = gql`
       outboundDate: String!
       inboundDate: String
     ): [Flight]
+    findAirport(airportSearch: String!): [Place]
   }
   type User {
     id: ID!
@@ -23,6 +24,14 @@ const typeDefs = gql`
     direct: Boolean
     departureDate: String
     returnDate: String
+  }
+  type Place {
+    placeId: String!
+    placeName: String!
+    regionId: String
+    cityId: String
+    countryId: String
+    countryName: String
   }
 
   type Mutation {
