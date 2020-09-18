@@ -7,10 +7,13 @@ const { flightValidation } = require('../../utils/flightValidation');
 //--Possible Future Variables, right now static---------
 const QUOTES_URL =
   'https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browsequotes/v1.0';
+const ROUTES_URL =
+  'https://skyscanner-skyscanner-flight-search-v1.p.rapidapi.com/apiservices/browseroutes/v1.0';
 const USER_COUNTRY = 'US';
 const USER_CURRENCY = 'USD';
 const USER_LANGUAGE = 'en-US';
-const COMBINE_URL = `${QUOTES_URL}/${USER_COUNTRY}/${USER_CURRENCY}/${USER_LANGUAGE}`;
+const COMBINE_QUOTES_URL = `${QUOTES_URL}/${USER_COUNTRY}/${USER_CURRENCY}/${USER_LANGUAGE}`;
+const COMBINE_ROUTES_URL = `${ROUTES_URL}/${USER_COUNTRY}/${USER_CURRENCY}/${USER_LANGUAGE}`;
 //------------------------------------------------------
 //
 //
@@ -18,8 +21,8 @@ const COMBINE_URL = `${QUOTES_URL}/${USER_COUNTRY}/${USER_CURRENCY}/${USER_LANGU
 module.exports = {
   Query: {
     //
-    //FIND ARRAY OF CHEAPEST FLIGHTS----
-    getCheapestFlight: async (root, args) => {
+    //---FIND ARRAY OF CHEAPEST FLIGHTS FOR GIVEN QUERY----
+    getCheapestFlightsForQuery: async (root, args) => {
       const {
         startingAirport,
         endingAirport,
@@ -41,9 +44,9 @@ module.exports = {
       //--- Dynamic URL based on if there is a return flight date selected
       let url = '';
       if (inboundDate) {
-        url = `${COMBINE_URL}/${startingAirport}/${endingAirport}/${outboundDate}/${inboundDate}`;
+        url = `${COMBINE_QUOTES_URL}/${startingAirport}/${endingAirport}/${outboundDate}/${inboundDate}`;
       } else
-        url = `${COMBINE_URL}/${startingAirport}/${endingAirport}/${outboundDate}/`;
+        url = `${COMBINE_QUOTES_URL}/${startingAirport}/${endingAirport}/${outboundDate}/`;
 
       //---Request params for Rapid Api
       const { data } = await axios({
@@ -92,6 +95,77 @@ module.exports = {
             ...foundFlightObjPattern,
           };
         }
+      });
+    },
+    //------------------//------------------//------------------//------------------//------------------
+    cheapestFlightsToAnywhere: async (
+      root,
+      { startingAirport, searchDate, amountOfResults }
+    ) => {
+      const result = await axios({
+        method: 'GET',
+        url: `${COMBINE_ROUTES_URL}/MCO-sky/anywhere/2020-11`,
+        headers: {
+          'content-type': 'application/octet-stream',
+          'x-rapidapi-host': process.env.HOST,
+          'x-rapidapi-key': process.env.KEY,
+          useQueryString: true,
+        },
+      });
+
+      const compareFlights = (a, b) => {
+        let comparison = 0;
+        if (a.MinPrice > b.MinPrice) {
+          comparison = 1;
+        } else if (a.MinPrice < b.MinPrice) {
+          comparison = -1;
+        }
+        return comparison;
+      };
+
+      const lowestPriceFirst = result.data.Quotes.sort(compareFlights);
+      const toBeCheaperThan =
+        lowestPriceFirst[Number(amountOfResults - 1)].MinPrice;
+
+      const sortedBelowCertainPrice = lowestPriceFirst.filter(
+        (flight) => flight.MinPrice <= toBeCheaperThan
+      );
+      //
+      //-------I DO NOT REALLY UNDERSTAND THIS------------
+      const matchingDestinations = sortedBelowCertainPrice.reduce((a, o1) => {
+        const match = result.data.Places.find(
+          (o2) => o1.OutboundLeg.DestinationId === o2.PlaceId
+        );
+        match && a.push(match);
+        return a;
+      }, []);
+
+      //--------------------------------------------------
+      //
+      //---CREATING NEW ARRAY OF COMBINE NESTED DATA
+      const nestedFlights = [];
+
+      sortedBelowCertainPrice.map((flight) => {
+        const destinationForReturn = matchingDestinations.find(
+          (dest) => flight.OutboundLeg.DestinationId === dest.PlaceId
+        );
+        nestedFlights.push({ ...flight, ...destinationForReturn });
+
+        return nestedFlights;
+      });
+      //--------------------------------------------------
+      return nestedFlights.map((f) => {
+        return {
+          price: f.MinPrice,
+          direct: f.Direct,
+          departureDate: f.OutboundLeg.DepartureDate,
+          returnDate: null,
+          placeId: f.PlaceId,
+          placeName: f.Name,
+          cityName: f.CityName,
+          countryName: f.CountryName,
+          IataCode: f.IataCode,
+        };
       });
     },
   },

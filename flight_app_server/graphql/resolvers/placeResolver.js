@@ -17,9 +17,10 @@ const COMBINE_PLACES_URL = `${PLACES_URL}/${USER_COUNTRY}/${USER_CURRENCY}/${USE
 module.exports = {
   Query: {
     findAirport: async (root, { airportSearch }) => {
+      //--Checks if search query is empty
       if (!airportSearch || airportSearch.trim() === '') {
         throw new UserInputError('Field cannot be empty', {
-          errors: 'Field cannot be empty',
+          errors: { airportSearch: 'Field cannot be empty' },
         });
       }
       const result = await axios({

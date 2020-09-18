@@ -2,13 +2,18 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
   type Query {
-    getCheapestFlight(
+    getCheapestFlightsForQuery(
       startingAirport: String!
       endingAirport: String!
       outboundDate: String!
       inboundDate: String
     ): [Flight]
     findAirport(airportSearch: String!): [Place]
+    cheapestFlightsToAnywhere(
+      startingAirport: String
+      searchDate: String
+      amountOfResults: Int
+    ): [ExtendedFlightInfo]
   }
   type User {
     id: ID!
@@ -20,10 +25,21 @@ const typeDefs = gql`
     token: String!
   }
   type Flight {
-    price: Int
-    direct: Boolean
-    departureDate: String
+    price: Int!
+    direct: Boolean!
+    departureDate: String!
     returnDate: String
+  }
+  type ExtendedFlightInfo {
+    price: Int!
+    direct: Boolean!
+    departureDate: String!
+    returnDate: String
+    placeId: Int
+    placeName: String!
+    cityName: String
+    countryName: String
+    IataCode: String
   }
   type Place {
     placeId: String!
