@@ -6,6 +6,7 @@ const typeDefs = gql`
       startingAirport: String!
       endingAirport: String!
       outboundDate: String!
+      inboundDate: String
     ): [Flight]
   }
   type User {
@@ -21,6 +22,7 @@ const typeDefs = gql`
     price: Int
     direct: Boolean
     departureDate: String
+    returnDate: String
   }
 
   type Mutation {

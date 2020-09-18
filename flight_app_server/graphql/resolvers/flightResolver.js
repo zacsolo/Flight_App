@@ -8,14 +8,27 @@ const BASE_URL =
 const USER_COUNTRY = 'US';
 const USER_CURRENCY = 'USD';
 const USER_LANGUAGE = 'en-US';
+const COMBINE_URL = `${BASE_URL}/${USER_COUNTRY}/${USER_CURRENCY}/${USER_LANGUAGE}`;
+
 module.exports = {
   Query: {
     getCheapestFlight: async (root, args) => {
-      const { startingAirport, endingAirport, outboundDate } = args;
+      const {
+        startingAirport,
+        endingAirport,
+        outboundDate,
+        inboundDate,
+      } = args;
+
+      let url = '';
+      if (inboundDate) {
+        url = `${COMBINE_URL}/${startingAirport}/${endingAirport}/${outboundDate}/${inboundDate}`;
+      } else
+        url = `${COMBINE_URL}/${startingAirport}/${endingAirport}/${outboundDate}/`;
 
       const { data } = await axios({
         method: 'GET',
-        url: `${BASE_URL}/${USER_COUNTRY}/${USER_CURRENCY}/${USER_LANGUAGE}/${startingAirport}/${endingAirport}/${outboundDate}`,
+        url,
         headers: {
           'content-type': 'application/octet-stream',
           'x-rapidapi-host': process.env.HOST,
@@ -32,20 +45,24 @@ module.exports = {
         }
         return acc;
       });
-      console.log(data.Quotes);
-      console.log('LOWEST PRICE', lowestPriceAvailable);
 
-      const cheapFlights = data.Quotes.filter(
+      return data.Quotes.filter(
         (flight) => flight.MinPrice === lowestPriceAvailable.MinPrice
-      );
-      console.log('CHEAPEST FLIGHTS___', cheapFlights);
-
-      return cheapFlights.map((flight) => {
-        return {
-          price: flight.MinPrice,
-          direct: flight.Direct,
-          departureDate: flight.OutboundLeg.DepartureDate,
-        };
+      ).map((flight) => {
+        if (flight.InboundLeg) {
+          return {
+            price: flight.MinPrice,
+            direct: flight.Direct,
+            departureDate: flight.OutboundLeg.DepartureDate,
+            returnDate: flight.InboundLeg.DepartureDate,
+          };
+        } else {
+          return {
+            price: flight.MinPrice,
+            direct: flight.Direct,
+            departureDate: flight.OutboundLeg.DepartureDate,
+          };
+        }
       });
     },
   },
