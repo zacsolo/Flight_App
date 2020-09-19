@@ -12,12 +12,15 @@ const isEmpty = (str) => {
 //Check that date is in valid format
 //Check that date is a future date
 
-const flightValidation = (
+const flightQueryValidation = (
   startingAirport,
   endingAirport,
   outboundDate,
   inboundDate
 ) => {
+  outboundDate = outboundDate.replace(/\s+/g, '');
+  inboundDate = inboundDate.replace(/\s+/g, '');
+
   const errors = {};
 
   if (isEmpty(startingAirport)) {
@@ -38,8 +41,11 @@ const flightValidation = (
 
   //CHECKING DATE FORMAT------------------------
   //__No dashes
-  else if (outboundDate.split('-').length === 1) {
-    errors.outboundDate = 'Improper format, no dashes';
+  else if (
+    outboundDate.split('-').length === 1 &&
+    outboundDate.toLowerCase() !== 'anytime'
+  ) {
+    errors.outboundDate = 'Improper format, no dashes and not anytime';
   }
   //__Two digit length for months
   else if (outboundDate.split('-').length === 2) {
@@ -49,6 +55,11 @@ const flightValidation = (
     ) {
       errors.outboundDate =
         'Improper format, two digit length for months, four digit for years';
+    } else if (
+      !Number(outboundDate.split('-')[1]) ||
+      !Number(outboundDate.split('-')[0])
+    ) {
+      errors.outboundDate = 'Improper format, must be numbers';
     }
   }
   //__Search query includes "day"__
@@ -61,6 +72,12 @@ const flightValidation = (
     ) {
       errors.outboundDate =
         'Improper format, both month and day have to be two digits, year must be four';
+    } else if (
+      !Number(outboundDate.split('-')[0]) ||
+      !Number(outboundDate.split('-')[1]) ||
+      !Number(outboundDate.split('-')[2])
+    ) {
+      errors.outboundDate = 'Improper format, must be numbers';
     }
   }
   //__Beyond 3 dashes
@@ -72,8 +89,11 @@ const flightValidation = (
   //__THESE ONLY GET VALIDATED IF IT IS NOT LEFT EMPTY
   if (inboundDate) {
     //__No dashes__
-    if (inboundDate.split('-').length === 1) {
-      errors.inboundDate = 'Improper format, no dashes';
+    if (
+      inboundDate.split('-').length === 1 &&
+      inboundDate.toLowerCase() !== 'anytime'
+    ) {
+      errors.inboundDate = 'Improper format, no dashes and not anytime';
     }
     //__Two digit length for months__
     else if (inboundDate.split('-').length === 2) {
@@ -83,11 +103,16 @@ const flightValidation = (
       ) {
         errors.inboundDate =
           'Improper format, two digit length for months, four digit for years';
+      } else if (
+        !Number(inboundDate.split('-')[1]) ||
+        !Number(inboundDate.split('-')[0])
+      ) {
+        errors.inboundDate = 'Improper format, must be numbers';
       }
     }
     //__Search query includes "day"__
     else if (inboundDate.split('-').length === 3) {
-      //__Both month and day are two digits, year is 4__
+      //__Both month and day are two digits, year is 4
       if (
         inboundDate.split('-')[0].length !== 4 ||
         inboundDate.split('-')[1].length !== 2 ||
@@ -95,11 +120,36 @@ const flightValidation = (
       ) {
         errors.inboundDate =
           'Improper format, both month and day have to be two digits, year must be four';
+      } else if (
+        !Number(inboundDate.split('-')[0]) ||
+        !Number(inboundDate.split('-')[1]) ||
+        !Number(inboundDate.split('-')[2])
+      ) {
+        errors.inboundDate = 'Improper format, must be numbers';
       }
     }
     //__Beyond 3 dashes__
     else if (inboundDate.split('-').length > 3) {
       errors.inboundDate = 'Improper format, string too long';
+    }
+  }
+
+  if (inboundDate && outboundDate) {
+    if (
+      outboundDate.toLowerCase() === 'anytime' &&
+      inboundDate.toLowerCase() !== 'anytime'
+    ) {
+      errors.outboundDate = 'Cannot pair anytime, with other date format';
+      errors.inboundDate = 'Cannot pair anytime, with other date format';
+    } else if (
+      inboundDate.toLowerCase() === 'anytime' &&
+      outboundDate.toLowerCase() !== 'anytime'
+    ) {
+      errors.outboundDate = 'Cannot pair anytime, with other date format';
+      errors.inboundDate = 'Cannot pair anytime, with other date format';
+    } else if (inboundDate.length !== outboundDate.length) {
+      errors.outboundDate = 'Date formats must match';
+      errors.inboundDate = 'Date formats must match';
     }
   }
 
@@ -114,6 +164,8 @@ const flightToAnywhereValidation = (
   searchDate,
   amountOfResults
 ) => {
+  searchDate = searchDate.replace(/\s+/g, '');
+
   const errors = {};
 
   if (isEmpty(startingAirport)) {
@@ -132,7 +184,7 @@ const flightToAnywhereValidation = (
     searchDate.split('-').length === 1 &&
     searchDate.toLowerCase() !== 'anytime'
   ) {
-    errors.searchDate = 'Improper format, no dashes';
+    errors.searchDate = 'Improper format, no dashes and not anytime';
   }
   //__Two digit length for months
   else if (searchDate.split('-').length === 2) {
@@ -146,7 +198,7 @@ const flightToAnywhereValidation = (
       !Number(searchDate.split('-')[1]) ||
       !Number(searchDate.split('-')[0])
     ) {
-      errors.searchDate = 'Improper format, numbers only';
+      errors.searchDate = 'Improper format, must be numbers';
     }
   }
   //__Search query includes "day"__
@@ -164,7 +216,7 @@ const flightToAnywhereValidation = (
       !Number(searchDate.split('-')[1]) ||
       !Number(searchDate.split('-')[2])
     ) {
-      errors.searchDate = 'Improper format, numbers only';
+      errors.searchDate = 'Improper format, must be numbers';
     }
   }
   //__Beyond 3 dashes
@@ -182,50 +234,7 @@ const flightToAnywhereValidation = (
   };
 };
 
-//--Sign up Validation--
-// firstName is not empty
-// lastName is not empty
-// email is not empty
-// email is valid email
-// password is not empty
-// passwords match
-
-// const signUpValidation = (
-//   firstName,
-//   lastName,
-//   email,
-//   password,
-//   confirmPassword
-// ) => {
-//   const errors = {};
-
-//   if (firstName.trim() === '') {
-//     errors.firstName = 'Can not be empty';
-//   }
-//   if (lastName.trim() === '') {
-//     errors.lastName = 'Can not be empty';
-//   }
-//   if (email.trim() === '') {
-//     errors.email = 'Can not be empty';
-//   } else {
-//     const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
-//     if (!email.match(regEx)) {
-//       errors.email = 'Must be a valid email address';
-//     }
-//   }
-//   if (password.trim() === '') {
-//     errors.password = 'Can not be empty';
-//   } else if (password !== confirmPassword) {
-//     errors.confirmPassword = 'passwords must match';
-//   }
-
-//   return {
-//     errors,
-//     valid: Object.keys(errors).length < 1 ? true : false,
-//   };
-// };
-
 module.exports = {
-  flightValidation,
+  flightQueryValidation,
   flightToAnywhereValidation,
 };
