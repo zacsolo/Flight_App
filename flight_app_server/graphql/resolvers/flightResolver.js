@@ -1,6 +1,9 @@
 const { UserInputError } = require('apollo-server');
 const axios = require('axios');
-const { flightValidation } = require('../../utils/flightValidation');
+const {
+  flightValidation,
+  flightToAnywhereValidation,
+} = require('../../utils/flightValidation');
 
 //
 //
@@ -20,7 +23,7 @@ const COMBINE_ROUTES_URL = `${ROUTES_URL}/${USER_COUNTRY}/${USER_CURRENCY}/${USE
 //
 module.exports = {
   Query: {
-    //
+    //--------------------------------------------------------
     //---FIND ARRAY OF CHEAPEST FLIGHTS FOR GIVEN QUERY----
     getCheapestFlightsForQuery: async (root, args) => {
       const {
@@ -98,13 +101,27 @@ module.exports = {
       });
     },
     //------------------//------------------//------------------//------------------//------------------
+    //---------------------
     cheapestFlightsToAnywhere: async (
       root,
       { startingAirport, searchDate, amountOfResults }
     ) => {
+      if (!searchDate || searchDate.trim() === '') searchDate = 'anytime';
+      if (!amountOfResults || amountOfResults.toString().length < 10)
+        amountOfResults = 10;
+
+      const { errors, valid } = flightToAnywhereValidation(
+        startingAirport,
+        searchDate,
+        amountOfResults
+      );
+
+      if (!valid) {
+        throw new UserInputError('Errors', { errors });
+      }
       const result = await axios({
         method: 'GET',
-        url: `${COMBINE_ROUTES_URL}/MCO-sky/anywhere/2020-11`,
+        url: `${COMBINE_ROUTES_URL}/${startingAirport}/anywhere/${searchDate}`,
         headers: {
           'content-type': 'application/octet-stream',
           'x-rapidapi-host': process.env.HOST,
