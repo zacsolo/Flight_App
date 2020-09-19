@@ -29,17 +29,19 @@ const typeDefs = gql`
     direct: Boolean!
     departureDate: String!
     returnDate: String
+    outBoundCarrierName: String!
+    inboundCarrierName: String
   }
   type ExtendedFlightInfo {
     price: Int!
     direct: Boolean!
     departureDate: String!
-    returnDate: String
     placeId: Int
-    placeName: String!
+    placeName: String
     cityName: String
-    countryName: String
+    countryName: String!
     IataCode: String
+    outboundCarrierName: String
   }
   type Place {
     placeId: String!

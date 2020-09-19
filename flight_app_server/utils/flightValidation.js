@@ -19,7 +19,6 @@ const flightQueryValidation = (
   inboundDate
 ) => {
   outboundDate = outboundDate.replace(/\s+/g, '');
-  inboundDate = inboundDate.replace(/\s+/g, '');
 
   const errors = {};
 
@@ -88,6 +87,7 @@ const flightQueryValidation = (
   //__INBOUND DATE IS OPTIONAL,
   //__THESE ONLY GET VALIDATED IF IT IS NOT LEFT EMPTY
   if (inboundDate) {
+    inboundDate = inboundDate.replace(/\s+/g, '');
     //__No dashes__
     if (
       inboundDate.split('-').length === 1 &&
