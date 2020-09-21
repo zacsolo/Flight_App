@@ -9,6 +9,7 @@ const MONGODB_URI = process.env.MONGODB_URI;
 const server = new ApolloServer({
   typeDefs,
   resolvers,
+  cors: true,
   context: ({ req }) => ({ req }),
 });
 

@@ -1,5 +1,6 @@
 const { UserInputError } = require('apollo-server');
 const axios = require('axios');
+const { v4: uuidv4 } = require('uuid');
 
 const {
   flightQueryValidation,
@@ -33,6 +34,7 @@ module.exports = {
         outboundDate,
         inboundDate,
       } = args;
+      console.log({ ...args });
       //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
       //__Checking for Errors in Inputs__
       //__If invalid, throw UserInputError__
@@ -139,14 +141,14 @@ module.exports = {
             departureDate: flight.OutboundLeg.DepartureDate,
             returnDate: flight.InboundLeg.DepartureDate,
             returnFlightId: flight.InboundLeg.CarrierIds[0],
-            outBoundCarrierName: carrier[0][0].Name,
+            outboundCarrierName: carrier[0][0].Name,
           });
         } else {
           outboundFlightCarrierArr.push({
             price: flight.MinPrice,
             direct: flight.Direct,
             departureDate: flight.OutboundLeg.DepartureDate,
-            outBoundCarrierName: carrier[0][0].Name,
+            outboundCarrierName: carrier[0][0].Name,
           });
         }
       });
@@ -177,37 +179,43 @@ module.exports = {
         return outboundFlightCarrierArr.map((flightInfo) => {
           return {
             ...flightInfo,
+            id: uuidv4(),
           };
         });
       } else {
         return inboundFlightCarrierArr.map((flightInfo) => {
           return {
             ...flightInfo,
+            id: uuidv4(),
           };
         });
       }
     },
     //------------------//------------------//------------------//------------------//------------------
+    //---OPEN ENDED SEARCH QUERY
+    //---from a chosen airport to ANYWHERE
     //
-    //---FIND ARRAY OF FLIGHTS TO ANYWHERE-----
     cheapestFlightsToAnywhere: async (
       root,
       { startingAirport, searchDate, amountOfResults }
     ) => {
-      //--Default values for searchData and amountOfResults--
+      //--__Default values for searchData and amountOfResults__--
       if (!searchDate || searchDate.trim() === '') searchDate = 'anytime';
       if (!amountOfResults || amountOfResults.toString().length < 10)
         amountOfResults = 10;
 
+      //__ERROR HANDLING FOR USER INPUTS________________________________
       const { errors, valid } = flightToAnywhereValidation(
         startingAirport,
         searchDate,
         amountOfResults
       );
-      //--Checking for errors in user inputs-------
+
       if (!valid) {
         throw new UserInputError('Errors', { errors });
       }
+      //___________________________________________________________________
+      //
       //--Requesting data from API with query string----
       const result = await axios({
         method: 'GET',
@@ -221,6 +229,7 @@ module.exports = {
       });
 
       //---SOME MAGIC I DONT UNDERSTAND--------
+      //--Sorted Array lowest first--
       const compareFlights = (a, b) => {
         let comparison = 0;
         if (a.MinPrice > b.MinPrice) {
@@ -230,18 +239,17 @@ module.exports = {
         }
         return comparison;
       };
+
+      const lowestPriceFirst = result.data.Quotes.sort(compareFlights);
       //----------------------------------------
       //
-      //--Sorted Array lowest first--
-      const lowestPriceFirst = result.data.Quotes.sort(compareFlights);
       //
       //--Finds "maximum price displayed", based on user input of how many dispalyed results
-      const toBeCheaperThan =
-        lowestPriceFirst[Number(amountOfResults - 1)].MinPrice;
-
       //--Returns results less than the maximum price--
       const sortedBelowCertainPrice = lowestPriceFirst.filter(
-        (flight) => flight.MinPrice <= toBeCheaperThan
+        (flight) =>
+          flight.MinPrice <=
+          lowestPriceFirst[Number(amountOfResults - 1)].MinPrice
       );
       //
       //--Finds corresponding Places that match to Quotes.
@@ -265,14 +273,14 @@ module.exports = {
       //--------------------------------------------------
       //
       //--Combines places and quotes together into single Objects
-      //---CREATING NEW ARRAY OF COMBINE NESTED DATA
-      const nestedFlights = [];
+      //---CREATING NEW ARRAY OF COMBINE NESTED DATA------------
+      const destinationNestedFlightsArr = [];
 
       sortedBelowCertainPrice.map((f) => {
         const destinationForReturn = matchingDestinations.find(
           (dest) => f.OutboundLeg.DestinationId === dest.PlaceId
         );
-        nestedFlights.push({
+        destinationNestedFlightsArr.push({
           price: f.MinPrice,
           direct: f.Direct,
           departureDate: f.OutboundLeg.DepartureDate,
@@ -284,12 +292,15 @@ module.exports = {
           IataCode: destinationForReturn.IataCode,
         });
 
-        return nestedFlights;
+        return destinationNestedFlightsArr;
       });
-
+      //----------------------------------------------------------
+      //
+      //--Combines carrier and destinationNestedFlights together into single Objects
+      //---CREATING NEW ARRAY OF COMBINE NESTED DATA------------
       const carrierNestedFlight = [];
 
-      nestedFlights.map((f) => {
+      destinationNestedFlightsArr.map((f) => {
         const carrier = matchingCarriers.filter((car) => {
           return Number(car.CarrierId) === Number(f.CarrierIds);
         });
@@ -301,9 +312,11 @@ module.exports = {
       });
 
       //--------------------------------------------------
-      return carrierNestedFlight.map((f) => {
+      //Final return of all nested flight data
+      return carrierNestedFlight.map((flightInfo) => {
         return {
-          ...f,
+          ...flightInfo,
+          id: uuidv4(),
         };
       });
     },
