@@ -44,6 +44,7 @@ module.exports = {
         outboundDate,
         inboundDate
       );
+
       if (!valid) {
         throw new UserInputError('Errors', { errors });
       }

@@ -8,14 +8,13 @@ export default function Home() {
     departureDate: '',
     returnDate: '',
   });
-  const [getFlights, { data, called, loading, error }] = useLazyQuery(
+  const [getFlights, { data, loading, error }] = useLazyQuery(
     GET_CHEAP_FLIGHTS
   );
 
-  console.log('DATA', data);
-  console.log('LOADING', loading);
-  console.log('CALLED', called);
-  console.log('ERROR', error);
+  if (error) {
+    console.log('ERROR', error.graphQLErrors[0].extensions.errors);
+  }
 
   const handleChange = (e) => {
     setValue({ ...value, [e.target.name]: e.target.value });
@@ -75,6 +74,15 @@ export default function Home() {
             </div>
           ))}
         </div>
+      )}
+      {error && (
+        <ul>
+          {Object.values(error.graphQLErrors[0].extensions.errors).map(
+            (err) => (
+              <li key={Math.random()}>{err}</li>
+            )
+          )}
+        </ul>
       )}
     </div>
   );
