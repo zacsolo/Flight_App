@@ -3,12 +3,15 @@ import Home from './pages/Home';
 import { BrowserRouter, Route } from 'react-router-dom';
 
 import './App.css';
+import QueryInput from './components/QueryInput';
 
 function App() {
   return (
-    <BrowserRouter>
-      <Route path='/' exact component={Home}></Route>
-    </BrowserRouter>
+    <div className='App'>
+      <BrowserRouter>
+        <Route path='/' exact component={QueryInput}></Route>
+      </BrowserRouter>
+    </div>
   );
 }
 
