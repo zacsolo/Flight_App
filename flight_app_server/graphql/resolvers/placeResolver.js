@@ -14,6 +14,8 @@ const COMBINE_PLACES_URL = `${PLACES_URL}/${USER_COUNTRY}/${USER_CURRENCY}/${USE
 //
 //
 //
+
+let QUERY_COUNTER = 0;
 module.exports = {
   Query: {
     findAirport: async (root, { airportSearch }) => {
@@ -36,6 +38,8 @@ module.exports = {
           query: airportSearch,
         },
       });
+      console.log('___QUERYING DATABASE____', (QUERY_COUNTER += 1));
+      console.log(result.data.Places[0]);
       return result.data.Places.map((place) => {
         return {
           placeId: place.PlaceId,

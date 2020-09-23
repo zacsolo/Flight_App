@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import TextField from '@material-ui/core/TextField';
 import Autocomplete from '@material-ui/lab/Autocomplete';
 import CircularProgress from '@material-ui/core/CircularProgress';
+import useDebounced from '../hooks/useDebounced';
 import { gql, useLazyQuery } from '@apollo/client';
 
 export default function QueryInput() {
@@ -12,7 +13,8 @@ export default function QueryInput() {
   const [options, setOptions] = useState([]);
   const loading1 = open && options.length === 0;
 
-  console.log('INFINITE LOOP CHECKER');
+  let debouncedState = useDebounced(searchTerm);
+  console.log(debouncedState);
 
   useEffect(() => {
     let active = true;
@@ -20,80 +22,82 @@ export default function QueryInput() {
     if (!loading1) {
       return undefined;
     }
-    if (searchTerm.trim() === '') {
-      setOpen(false);
-    }
-    findAirport({ variables: { airportSearch: searchTerm } });
+
+    findAirport({ variables: { airportSearch: debouncedState } });
+
     if (active && data) {
+      setOpen(true);
       setOptions(data.findAirport);
     }
 
     return () => {
       active = false;
     };
-  }, [loading1, data, findAirport, searchTerm]);
+  }, [loading1, data, findAirport, debouncedState]);
 
   useEffect(() => {
     if (!open) {
       setOptions([]);
     }
   }, [open]);
-  console.log(searchTerm);
+
   return (
-    <Autocomplete
-      id='find-airport'
-      style={{ width: 300 }}
-      open={open}
-      onOpen={() => {
-        setOpen(true);
-      }}
-      onClose={() => {
-        setOpen(false);
-      }}
-      inputValue={searchTerm}
-      onInputChange={(e, option) => {
-        if (e) {
-          return setSearchTerm(e.target.value);
-        } else {
+    <div>
+      <Autocomplete
+        id='find-airport'
+        style={{ width: 300 }}
+        open={options.length > 1 && open}
+        onOpen={() => {
+          if (searchTerm.length > 1) {
+            setOpen(true);
+          }
+        }}
+        onClose={() => {
+          setOpen(false);
+        }}
+        inputValue={searchTerm}
+        onInputChange={(e, option) => {
           return setSearchTerm(option);
-        }
-      }}
-      getOptionSelected={(option, value) => {
-        // console.log('OPTION', option);
-        // console.log('VALUE', value);
-        return option.placeName === value.placeName;
-      }}
-      getOptionLabel={(option) => {
-        if (!option.regionId || option.regionId.trim() == '') {
-          return `${option.placeName}, ${option.countryName}`;
-        } else {
-          return `${option.placeName}, ${option.regionId}`;
-        }
-      }}
-      options={options}
-      loading={loading1}
-      renderInput={(params) => {
-        console.log(params);
-        return (
-          <TextField
-            {...params}
-            label='Asynchronous'
-            variant='outlined'
-            InputProps={{
-              ...params.InputProps,
-              endAdornment: (
-                <React.Fragment>
-                  {loading1 ? (
-                    <CircularProgress color='inherit' size={20} />
-                  ) : null}
-                  {params.InputProps.endAdornment}
-                </React.Fragment>
-              ),
-            }}
-          />
-        );
-      }}
-    />
+        }}
+        getOptionSelected={(option, value) => {
+          // console.log('OPTION', option);
+          // console.log('VALUE', value);
+          return option.placeName === value.placeName;
+        }}
+        getOptionLabel={(option) => {
+          // console.log('option', option);
+          // console.log('second', second);
+          if (!option.regionId || option.regionId.trim() === '') {
+            return `${option.placeName}, ${option.countryName}`;
+          } else {
+            return `${option.placeName}, ${option.regionId}`;
+          }
+        }}
+        options={options.length > 1 ? options : []}
+        loading={loading1}
+        renderInput={(params) => {
+          return (
+            <TextField
+              {...params}
+              label='From where?'
+              variant='outlined'
+              InputProps={{
+                ...params.InputProps,
+                endAdornment: (
+                  <React.Fragment>
+                    {loading1 ? (
+                      <CircularProgress color='inherit' size={20} />
+                    ) : null}
+                    {params.InputProps.endAdornment}
+                  </React.Fragment>
+                ),
+              }}
+            />
+          );
+        }}
+      />
+      {loading && <div style={{ marginTop: '500px' }}>Loading new Data</div>}
+    </div>
   );
 }
 
