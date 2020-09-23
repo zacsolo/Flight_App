@@ -15,32 +15,44 @@ export default function QueryInput() {
 
   let debouncedState = useDebounced(searchTerm);
   console.log(debouncedState);
+  console.log(loading);
 
   useEffect(() => {
     let active = true;
 
-    if (!loading1) {
-      return undefined;
+    if (loading) {
+      if (debouncedState.length === 0) {
+        console.log('loadin1 no value-->');
+        setOpen(false);
+      } else {
+        console.log('loadin1 some value-->');
+        return undefined;
+      }
     }
 
     findAirport({ variables: { airportSearch: debouncedState } });
-
+    console.log('body1 -->');
     if (active && data) {
+      console.log('active and data -->');
       setOpen(true);
       setOptions(data.findAirport);
     }
+    console.log('body2 -->');
 
     return () => {
+      console.log('return -->');
       active = false;
     };
   }, [loading1, data, findAirport, debouncedState]);
 
+  //--USE EFFECT FOR OPENING AND CLOSING INPUT
   useEffect(() => {
     if (!open) {
       setOptions([]);
     }
   }, [open]);
 
+  //---JSX RENDER INPUT
   return (
     <div>
       <Autocomplete
@@ -74,7 +86,7 @@ export default function QueryInput() {
           }
         }}
         options={options.length > 1 ? options : []}
-        loading={loading1}
+        loading={loading}
         renderInput={(params) => {
           return (
             <TextField
@@ -85,7 +97,7 @@ export default function QueryInput() {
                 ...params.InputProps,
                 endAdornment: (
                   <React.Fragment>
-                    {loading1 ? (
+                    {loading ? (
                       <CircularProgress color='inherit' size={20} />
                     ) : null}
                     {params.InputProps.endAdornment}
