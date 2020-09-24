@@ -25,6 +25,11 @@ module.exports = {
           errors: { airportSearch: 'Field cannot be empty' },
         });
       }
+      if (Number(airportSearch)) {
+        throw new UserInputError('Value cannot be of type number', {
+          errors: { airportSearch: 'cannot be a number' },
+        });
+      }
       const result = await axios({
         method: 'GET',
         url: COMBINE_PLACES_URL,

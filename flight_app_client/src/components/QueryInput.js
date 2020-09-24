@@ -6,46 +6,104 @@ import useDebounced from '../hooks/useDebounced';
 import { gql, useLazyQuery } from '@apollo/client';
 
 export default function QueryInput() {
-  const [findAirport, { loading, data, error }] = useLazyQuery(GET_AIRPORTS);
+  //-- GraphQL query, sending the debounced search value as params
+  const [findAirport, { loading, data }] = useLazyQuery(GET_AIRPORTS);
 
+  //Is the drawer open
   const [open, setOpen] = useState(false);
+  //A selection has been made from the options
+  const [selected, setSelected] = useState('');
+  //A term that is being searched for, passed to debounced
   const [searchTerm, setSearchTerm] = useState('');
+  //The last search term that was fetched
+  const [lastSearch, setLastSearch] = useState('');
+  //The list of options populated
   const [options, setOptions] = useState([]);
-  const loading1 = open && options.length === 0;
-
+  //The last list of options populated, used for matching
+  const [oldOptions, setOldOptions] = useState([]);
+  //Debounced seachTerms
   let debouncedState = useDebounced(searchTerm);
-  console.log(debouncedState);
-  console.log(loading);
+
+  //Helper Function Resets State
+  const resetState = () => {
+    setOpen(false);
+    findAirport({ variables: { airportSearch: '' } });
+    setSelected('');
+    setOptions([]);
+    setOldOptions([]);
+  };
 
   useEffect(() => {
     let active = true;
+    //--Checks for Resetting State--------------------------------
+    if (searchTerm.length === 0 && searchTerm !== selected) {
+      resetState();
+    }
+    if (searchTerm.length === 0 && searchTerm === selected) {
+      resetState();
+    }
+    if (searchTerm !== lastSearch) {
+      resetState();
+    }
+    //------------------------------------------------------------
+    //
+    //--Checks if the current search term matches an "old option"
+    //--If so it sets that as the value of "selected"
+    if (
+      oldOptions.find(
+        (name) => `${name.placeName}, ${name.countryName}` === searchTerm
+      ) ||
+      oldOptions.find(
+        (name) => `${name.placeName}, ${name.regionId}` === searchTerm
+      )
+    ) {
+      setOpen(false);
+      setSelected(searchTerm);
+      return undefined;
+    }
 
+    //This prevents an inifite loop, not sure why yet
     if (loading) {
+      console.log(debouncedState);
       if (debouncedState.length === 0) {
-        console.log('loadin1 no value-->');
         setOpen(false);
       } else {
-        console.log('loadin1 some value-->');
         return undefined;
       }
     }
-
-    findAirport({ variables: { airportSearch: debouncedState } });
-    console.log('body1 -->');
+    //
+    //--If there is currently data returned from GQL Query
     if (active && data) {
-      console.log('active and data -->');
-      setOpen(true);
-      setOptions(data.findAirport);
+      //If nothing is selected but there is a search term
+      if (selected.length < 1 && searchTerm.length >= 1) {
+        //If this is a completely new search
+        //Or a modification of the last active search
+        if (lastSearch.length === 0 || lastSearch !== searchTerm) {
+          setOpen(true);
+          setLastSearch(searchTerm);
+          setOptions(data.findAirport);
+          setOldOptions(data.findAirport);
+        }
+        return undefined;
+      }
+      return undefined;
     }
-    console.log('body2 -->');
+    //If there is no selected query but there is a debounced search term
+    if (selected.length < 1 && debouncedState.length > 0) {
+      if (data) {
+        return undefined;
+      } else {
+        //If there is no data returned from our GQL
+        findAirport({ variables: { airportSearch: debouncedState } });
+      }
+    }
 
     return () => {
-      console.log('return -->');
       active = false;
     };
-  }, [loading1, data, findAirport, debouncedState]);
+  }, [data, findAirport, debouncedState]);
 
-  //--USE EFFECT FOR OPENING AND CLOSING INPUT
+  //   --USE EFFECT FOR OPENING AND CLOSING INPUT
   useEffect(() => {
     if (!open) {
       setOptions([]);
@@ -56,11 +114,13 @@ export default function QueryInput() {
   return (
     <div>
       <Autocomplete
+        clearOnBlur={true}
+        blurOnSelect={true}
         id='find-airport'
         style={{ width: 300 }}
         open={options.length > 1 && open}
         onOpen={() => {
-          if (searchTerm.length > 1) {
+          if (debouncedState.length > 1) {
             setOpen(true);
           }
         }}
@@ -68,17 +128,11 @@ export default function QueryInput() {
           setOpen(false);
         }}
         inputValue={searchTerm}
-        onInputChange={(e, option) => {
-          return setSearchTerm(option);
-        }}
+        onInputChange={(_, option) => setSearchTerm(option)}
         getOptionSelected={(option, value) => {
-          // console.log('OPTION', option);
-          // console.log('VALUE', value);
           return option.placeName === value.placeName;
         }}
         getOptionLabel={(option) => {
-          // console.log('option', option);
-          // console.log('second', second);
           if (!option.regionId || option.regionId.trim() === '') {
             return `${option.placeName}, ${option.countryName}`;
           } else {
