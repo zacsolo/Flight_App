@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { useLazyQuery, gql, useQuery } from '@apollo/client';
+import QueryInput from '../components/QueryInput';
 
 export default function Home() {
   const [value, setValue] = useState({
@@ -19,9 +20,15 @@ export default function Home() {
   const handleChange = (e) => {
     setValue({ ...value, [e.target.name]: e.target.value });
   };
+  const updateState = (inputPlace, name) => {
+    console.log(inputPlace[0].placeId);
+    const newPlace = inputPlace[0].placeId;
+    setValue({ ...value, [name]: newPlace });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
+    console.log(value);
     getFlights({
       variables: {
         startingAirport: value.from,
@@ -37,8 +44,9 @@ export default function Home() {
   return (
     <div className='App'>
       <form onSubmit={handleSubmit}>
-        <input placeholder='From' name='from' onChange={handleChange} />
-        <input placeholder='To' name='to' onChange={handleChange} />
+        <QueryInput name='from' updateState={updateState} />
+        <QueryInput name='to' updateState={updateState} />
+        {/* <input placeholder='From' name='from' onChange={handleChange} /> */}
         <input
           placeholder='Departure Date'
           name='departureDate'
@@ -68,7 +76,7 @@ export default function Home() {
               {flight.returnDate && (
                 <div style={{ border: '1px solid red' }}>
                   <p>Return Date: {flight.returnDate}</p>
-                  <p>Carrier Name{flight.inboundCarrierName}</p>
+                  <p>Carrier Name: {flight.inboundCarrierName}</p>
                 </div>
               )}
             </div>

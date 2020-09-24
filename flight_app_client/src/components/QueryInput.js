@@ -5,10 +5,12 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import useDebounced from '../hooks/useDebounced';
 import { gql, useLazyQuery } from '@apollo/client';
 
-export default function QueryInput() {
-  //-- GraphQL query, sending the debounced search value as params
+export default function QueryInput({ updateState, name }) {
+  //__GRAPH QL__
+  //GraphQL query, sending the debounced search value as params
   const [findAirport, { loading, data }] = useLazyQuery(GET_AIRPORTS);
-
+  //
+  //__LOCAL STATE__
   //Is the drawer open
   const [open, setOpen] = useState(false);
   //A selection has been made from the options
@@ -49,14 +51,36 @@ export default function QueryInput() {
     //
     //--Checks if the current search term matches an "old option"
     //--If so it sets that as the value of "selected"
+    //
+    //
+    //--Selecting a Search Query and Passing to Parent for Search
     if (
       oldOptions.find(
         (name) => `${name.placeName}, ${name.countryName}` === searchTerm
-      ) ||
+      )
+    ) {
+      updateState(
+        oldOptions.filter(
+          (name) => `${name.placeName}, ${name.countryName}` === searchTerm
+        ),
+        name
+      );
+      setOpen(false);
+      setSelected(searchTerm);
+      return undefined;
+    }
+    //--Selecting a Search Query and Passing to Parent for Search
+    if (
       oldOptions.find(
         (name) => `${name.placeName}, ${name.regionId}` === searchTerm
       )
     ) {
+      updateState(
+        oldOptions.filter(
+          (name) => `${name.placeName}, ${name.regionId}` === searchTerm
+        ),
+        name
+      );
       setOpen(false);
       setSelected(searchTerm);
       return undefined;

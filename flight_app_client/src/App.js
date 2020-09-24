@@ -10,7 +10,7 @@ function App() {
   return (
     <div className='App'>
       <BrowserRouter>
-        <Route path='/' exact component={QueryInput}></Route>
+        <Route path='/' exact component={Home}></Route>
       </BrowserRouter>
     </div>
   );
