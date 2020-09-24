@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { useLazyQuery, gql, useQuery } from '@apollo/client';
 import QueryInput from '../components/QueryInput';
+import BasicDatePicker from '../components/DatePicker';
+import moment from 'moment';
 
 export default function Home() {
   const [value, setValue] = useState({
@@ -25,6 +27,9 @@ export default function Home() {
     const newPlace = inputPlace[0].placeId;
     setValue({ ...value, [name]: newPlace });
   };
+  const updateDate = (inputDate, name) => {
+    setValue({ ...value, [name]: inputDate });
+  };
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -47,16 +52,18 @@ export default function Home() {
         <QueryInput name='from' updateState={updateState} />
         <QueryInput name='to' updateState={updateState} />
         {/* <input placeholder='From' name='from' onChange={handleChange} /> */}
-        <input
+        <BasicDatePicker name='departureDate' updateDate={updateDate} />
+        <BasicDatePicker name='returnDate' updateDate={updateDate} />
+        {/* <input
           placeholder='Departure Date'
           name='departureDate'
           onChange={handleChange}
-        />
-        <input
+        /> */}
+        {/* <input
           placeholder='Return Date'
           name='returnDate'
           onChange={handleChange}
-        />
+        /> */}
         <button type='submit'>Search</button>
       </form>
       {data && (
@@ -70,12 +77,18 @@ export default function Home() {
                 <p>Direct: {flight.direct ? 'Yes' : 'No'}</p>
               </div>
               <div style={{ border: '1px solid red' }}>
-                <p>Departure Date: {flight.departureDate}</p>
+                <p>
+                  Departure Date:{' '}
+                  {moment(flight.departureDate).format('dddd, MMMM Do YYYY')}
+                </p>
                 <p> Carrier Name: {flight.outboundCarrierName}</p>
               </div>
               {flight.returnDate && (
                 <div style={{ border: '1px solid red' }}>
-                  <p>Return Date: {flight.returnDate}</p>
+                  <p>
+                    Return Date:{' '}
+                    {moment(flight.returnDate).format('dddd, MMMM Do YYYY')}
+                  </p>
                   <p>Carrier Name: {flight.inboundCarrierName}</p>
                 </div>
               )}
