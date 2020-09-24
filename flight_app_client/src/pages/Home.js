@@ -3,6 +3,7 @@ import { useLazyQuery, gql, useQuery } from '@apollo/client';
 import QueryInput from '../components/QueryInput';
 import BasicDatePicker from '../components/DatePicker';
 import moment from 'moment';
+import CheckBox from '../components/CheckBox';
 
 export default function Home() {
   const [value, setValue] = useState({
@@ -11,6 +12,9 @@ export default function Home() {
     departureDate: '',
     returnDate: '',
   });
+  const [disableDates, setDisableDates] = useState(false);
+  console.log(value);
+
   const [getFlights, { data, loading, error }] = useLazyQuery(
     GET_CHEAP_FLIGHTS
   );
@@ -19,9 +23,6 @@ export default function Home() {
     console.log('ERROR', error.graphQLErrors[0].extensions.errors);
   }
 
-  const handleChange = (e) => {
-    setValue({ ...value, [e.target.name]: e.target.value });
-  };
   const updateState = (inputPlace, name) => {
     console.log(inputPlace[0].placeId);
     const newPlace = inputPlace[0].placeId;
@@ -29,6 +30,13 @@ export default function Home() {
   };
   const updateDate = (inputDate, name) => {
     setValue({ ...value, [name]: inputDate });
+  };
+  const anytimeDates = (params) => {
+    console.log(params);
+    setDisableDates(!disableDates);
+    params
+      ? setValue({ ...value, departureDate: 'anytime', returnDate: 'anytime' })
+      : setValue({ ...value, departureDate: '', returnDate: '' });
   };
 
   const handleSubmit = (e) => {
@@ -51,19 +59,17 @@ export default function Home() {
       <form onSubmit={handleSubmit}>
         <QueryInput name='from' updateState={updateState} />
         <QueryInput name='to' updateState={updateState} />
-        {/* <input placeholder='From' name='from' onChange={handleChange} /> */}
-        <BasicDatePicker name='departureDate' updateDate={updateDate} />
-        <BasicDatePicker name='returnDate' updateDate={updateDate} />
-        {/* <input
-          placeholder='Departure Date'
+        <BasicDatePicker
           name='departureDate'
-          onChange={handleChange}
-        /> */}
-        {/* <input
-          placeholder='Return Date'
+          updateDate={updateDate}
+          disableDates={disableDates}
+        />
+        <BasicDatePicker
           name='returnDate'
-          onChange={handleChange}
-        /> */}
+          updateDate={updateDate}
+          disableDates={disableDates}
+        />
+        <CheckBox anytimeDates={anytimeDates} />
         <button type='submit'>Search</button>
       </form>
       {data && (

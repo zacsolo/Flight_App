@@ -1,10 +1,20 @@
-import React, { Fragment, useState } from 'react';
+import React, { Fragment, useState, useEffect } from 'react';
 import { DatePicker } from '@material-ui/pickers';
 import moment from 'moment';
+import CheckBox from '../components/CheckBox';
 
 function BasicDatePicker(props) {
-  const [selectedDate, handleDateChange] = useState(new Date());
+  const [selectedDate, handleDateChange] = useState(null);
+  const [anytimeName, setAnytimeName] = useState('');
 
+  useEffect(() => {
+    if (props.disableDates) {
+      handleDateChange(null);
+      setAnytimeName('Anytime');
+    } else {
+      setAnytimeName('');
+    }
+  }, [props.disableDates]);
   return (
     <Fragment>
       {/* <DatePicker
@@ -26,6 +36,7 @@ function BasicDatePicker(props) {
       /> */}
 
       <DatePicker
+        disabled={props.disableDates ? true : false}
         autoOk
         disablePast
         variant='inline'
@@ -41,7 +52,11 @@ function BasicDatePicker(props) {
           return date;
         }}
         label={
-          props.name === 'departureDate' ? 'Leaving from?' : 'Returning...'
+          anytimeName === 'Anytime'
+            ? 'Anytime'
+            : props.name === 'departureDate'
+            ? 'Departure'
+            : 'Return'
         }
         value={selectedDate}
         onChange={handleDateChange}
