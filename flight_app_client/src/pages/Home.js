@@ -20,67 +20,19 @@ export default function Home() {
       },
     });
   };
-
+  console.log(data);
   return (
     <div className='App'>
       <FlightForm error={error} searchForFlights={searchForFlights} />
-      <FlightDisplayCard />
+
       {data && !loading && (
         <div>
-          {console.log(data.getCheapestFlightsForQuery)}
-          {data.getCheapestFlightsForQuery.map((flight) => (
-            <div
-              key={flight.id}
-              style={{ border: '3px solid blue', marginBottom: '5px' }}>
-              <div style={{ border: '1px solid red' }}>
-                <p>Price:{flight.price}</p>
-                <p>Direct: {flight.direct ? 'Yes' : 'No'}</p>
-              </div>
-              <div style={{ border: '1px solid red' }}>
-                <p>
-                  Departure Date:{' '}
-                  {moment(flight.departureDate).format('dddd, MMMM Do YYYY')}
-                </p>
-                <p> Carrier Name: {flight.outboundCarrierName}</p>
-              </div>
-              {flight.returnDate && (
-                <div style={{ border: '1px solid red' }}>
-                  <p>
-                    Return Date:{' '}
-                    {moment(flight.returnDate).format('dddd, MMMM Do YYYY')}
-                  </p>
-                  <p>Carrier Name: {flight.inboundCarrierName}</p>
-                </div>
-              )}
-            </div>
+          {data.getCheapestFlightsForQuery.map((f) => (
+            <FlightDisplayCard id={f.id} flight={{ ...f }} />
           ))}
+          {error && console.log(error)}
         </div>
       )}
-      {error && console.log(error)}
     </div>
   );
 }
-
-// const GET_CHEAP_FLIGHTS = gql`
-//   query getCheapestFlightsForQuery(
-//     $startingAirport: String!
-//     $endingAirport: String!
-//     $outboundDate: String!
-//     $inboundDate: String
-//   ) {
-//     getCheapestFlightsForQuery(
-//       startingAirport: $startingAirport
-//       endingAirport: $endingAirport
-//       outboundDate: $outboundDate
-//       inboundDate: $inboundDate
-//     ) {
-//       price
-//       direct
-//       departureDate
-//       outboundCarrierName
-//       returnDate
-//       inboundCarrierName
-//       id
-//     }
-//   }
-// `;
