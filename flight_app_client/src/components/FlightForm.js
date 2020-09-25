@@ -41,7 +41,7 @@ export default function FlightForm({ error, searchForFlights }) {
   };
 
   return (
-    <FormControl>
+    <FormControl style={{ marginBottom: 25 }}>
       <QueryInput name='startingAirport' updateState={updateState} />
       <QueryInput name='endingAirport' updateState={updateState} />
       <BasicDatePicker

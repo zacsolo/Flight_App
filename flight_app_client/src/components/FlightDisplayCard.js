@@ -9,6 +9,8 @@ import LinearScaleIcon from '@material-ui/icons/LinearScale';
 import RemoveIcon from '@material-ui/icons/Remove';
 import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
+import FlightTakeoffIcon from '@material-ui/icons/FlightTakeoff';
+import FlightLandIcon from '@material-ui/icons/FlightLand';
 import moment from 'moment';
 
 export default function FlightDisplayCard({
@@ -81,7 +83,9 @@ export default function FlightDisplayCard({
               {moment(departureDate).format('MM/DD/YYYY')}
             </Typography>
           </CardContent>
-
+          <CardContent>
+            <FlightTakeoffIcon />
+          </CardContent>
           <CardContent
             style={{
               display: 'flex',
@@ -113,6 +117,9 @@ export default function FlightDisplayCard({
             <Typography variant='body2' color='textSecondary'>
               {moment(returnDate).format('MM/DD/YYYY')}
             </Typography>
+          </CardContent>
+          <CardContent>
+            <FlightLandIcon />
           </CardContent>
 
           <CardContent
