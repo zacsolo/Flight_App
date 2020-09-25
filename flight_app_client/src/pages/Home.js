@@ -27,7 +27,7 @@ export default function Home() {
       {data && !loading && (
         <div>
           {data.getCheapestFlightsForQuery.map((f) => (
-            <FlightDisplayCard id={f.id} flight={{ ...f }} />
+            <FlightDisplayCard key={f.id} flight={{ ...f }} />
           ))}
           {error && console.log(error)}
         </div>

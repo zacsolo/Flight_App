@@ -143,8 +143,8 @@ module.exports = {
             outboundOrigin: flight.OutboundLeg.OriginId,
             outboundDestination: flight.OutboundLeg.DestinationId,
             returnDate: flight.InboundLeg.DepartureDate,
-            inboundOrigin: flight.OutboundLeg.OriginId,
-            inboundDestination: flight.OutboundLeg.DestinationId,
+            inboundOrigin: flight.InboundLeg.OriginId,
+            inboundDestination: flight.InboundLeg.DestinationId,
             returnFlightId: flight.InboundLeg.CarrierIds[0],
             outboundCarrierName: carrier[0][0].Name,
           });
