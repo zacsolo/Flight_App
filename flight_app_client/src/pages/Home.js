@@ -1,78 +1,29 @@
-import React, { useState } from 'react';
-import { useLazyQuery, gql, useQuery } from '@apollo/client';
-import QueryInput from '../components/QueryInput';
-import BasicDatePicker from '../components/DatePicker';
+import React from 'react';
+import { GET_CHEAP_FLIGHTS } from '../gql/FlightQueries';
+import { useLazyQuery } from '@apollo/client';
+
 import moment from 'moment';
-import CheckBox from '../components/CheckBox';
+
+import FlightForm from '../components/FlightForm';
 
 export default function Home() {
-  const [value, setValue] = useState({
-    from: '',
-    to: '',
-    departureDate: '',
-    returnDate: '',
-  });
-  const [disableDates, setDisableDates] = useState(false);
-  console.log(value);
-
   const [getFlights, { data, loading, error }] = useLazyQuery(
     GET_CHEAP_FLIGHTS
   );
 
-  if (error) {
-    console.log('ERROR', error.graphQLErrors[0].extensions.errors);
-  }
-
-  const updateState = (inputPlace, name) => {
-    console.log(inputPlace[0].placeId);
-    const newPlace = inputPlace[0].placeId;
-    setValue({ ...value, [name]: newPlace });
-  };
-  const updateDate = (inputDate, name) => {
-    setValue({ ...value, [name]: inputDate });
-  };
-  const anytimeDates = (params) => {
-    console.log(params);
-    setDisableDates(!disableDates);
-    params
-      ? setValue({ ...value, departureDate: 'anytime', returnDate: 'anytime' })
-      : setValue({ ...value, departureDate: '', returnDate: '' });
-  };
-
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    console.log(value);
+  const searchForFlights = (flightQuery) => {
+    console.log(flightQuery);
     getFlights({
       variables: {
-        startingAirport: value.from,
-        endingAirport: value.to,
-        outboundDate: value.departureDate,
-        inboundDate: value.returnDate,
+        ...flightQuery,
       },
     });
   };
-  if (loading) {
-    return <div>Loading...</div>;
-  }
+
   return (
     <div className='App'>
-      <form onSubmit={handleSubmit}>
-        <QueryInput name='from' updateState={updateState} />
-        <QueryInput name='to' updateState={updateState} />
-        <BasicDatePicker
-          name='departureDate'
-          updateDate={updateDate}
-          disableDates={disableDates}
-        />
-        <BasicDatePicker
-          name='returnDate'
-          updateDate={updateDate}
-          disableDates={disableDates}
-        />
-        <CheckBox anytimeDates={anytimeDates} />
-        <button type='submit'>Search</button>
-      </form>
-      {data && (
+      <FlightForm error={error} searchForFlights={searchForFlights} />
+      {data && !loading && (
         <div>
           {data.getCheapestFlightsForQuery.map((flight) => (
             <div
@@ -115,26 +66,26 @@ export default function Home() {
   );
 }
 
-const GET_CHEAP_FLIGHTS = gql`
-  query getCheapestFlightsForQuery(
-    $startingAirport: String!
-    $endingAirport: String!
-    $outboundDate: String!
-    $inboundDate: String
-  ) {
-    getCheapestFlightsForQuery(
-      startingAirport: $startingAirport
-      endingAirport: $endingAirport
-      outboundDate: $outboundDate
-      inboundDate: $inboundDate
-    ) {
-      price
-      direct
-      departureDate
-      outboundCarrierName
-      returnDate
-      inboundCarrierName
-      id
-    }
-  }
-`;
+// const GET_CHEAP_FLIGHTS = gql`
+//   query getCheapestFlightsForQuery(
+//     $startingAirport: String!
+//     $endingAirport: String!
+//     $outboundDate: String!
+//     $inboundDate: String
+//   ) {
+//     getCheapestFlightsForQuery(
+//       startingAirport: $startingAirport
+//       endingAirport: $endingAirport
+//       outboundDate: $outboundDate
+//       inboundDate: $inboundDate
+//     ) {
+//       price
+//       direct
+//       departureDate
+//       outboundCarrierName
+//       returnDate
+//       inboundCarrierName
+//       id
+//     }
+//   }
+// `;

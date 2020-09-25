@@ -136,58 +136,56 @@ export default function QueryInput({ updateState, name }) {
 
   //---JSX RENDER INPUT
   return (
-    <div>
-      <Autocomplete
-        clearOnBlur={true}
-        blurOnSelect={true}
-        id='find-airport'
-        style={{ width: 300 }}
-        open={options.length > 1 && open}
-        onOpen={() => {
-          if (debouncedState.length > 1) {
-            setOpen(true);
-          }
-        }}
-        onClose={() => {
-          setOpen(false);
-        }}
-        inputValue={searchTerm}
-        onInputChange={(_, option) => setSearchTerm(option)}
-        getOptionSelected={(option, value) => {
-          return option.placeName === value.placeName;
-        }}
-        getOptionLabel={(option) => {
-          if (!option.regionId || option.regionId.trim() === '') {
-            return `${option.placeName}, ${option.countryName}`;
-          } else {
-            return `${option.placeName}, ${option.regionId}`;
-          }
-        }}
-        options={options.length > 1 ? options : []}
-        loading={loading}
-        renderInput={(params) => {
-          return (
-            <TextField
-              {...params}
-              label={name === 'from' ? 'From where?' : 'To where?'}
-              variant='outlined'
-              InputProps={{
-                ...params.InputProps,
-                endAdornment: (
-                  <React.Fragment>
-                    {loading ? (
-                      <CircularProgress color='inherit' size={20} />
-                    ) : null}
-                    {params.InputProps.endAdornment}
-                  </React.Fragment>
-                ),
-              }}
-            />
-          );
-        }}
-      />
-      {loading && <div style={{ marginTop: '500px' }}>Loading new Data</div>}
-    </div>
+    <Autocomplete
+      size='small'
+      clearOnBlur={true}
+      blurOnSelect={true}
+      id={`find-airport-${name}`}
+      style={{ width: 300 }}
+      open={options.length > 1 && open}
+      onOpen={() => {
+        if (debouncedState.length > 1) {
+          setOpen(true);
+        }
+      }}
+      onClose={() => {
+        setOpen(false);
+      }}
+      inputValue={searchTerm}
+      onInputChange={(_, option) => setSearchTerm(option)}
+      getOptionSelected={(option, value) => {
+        return option.placeName === value.placeName;
+      }}
+      getOptionLabel={(option) => {
+        if (!option.regionId || option.regionId.trim() === '') {
+          return `${option.placeName}, ${option.countryName}`;
+        } else {
+          return `${option.placeName}, ${option.regionId}`;
+        }
+      }}
+      options={options.length > 1 ? options : []}
+      loading={loading}
+      renderInput={(params) => {
+        return (
+          <TextField
+            {...params}
+            label={name === 'from' ? 'From where?' : 'To where?'}
+            variant='standard'
+            InputProps={{
+              ...params.InputProps,
+              endAdornment: (
+                <React.Fragment>
+                  {loading ? (
+                    <CircularProgress color='inherit' size={20} />
+                  ) : null}
+                  {/* {params.InputProps.endAdornment} */}
+                </React.Fragment>
+              ),
+            }}
+          />
+        );
+      }}
+    />
   );
 }
 
