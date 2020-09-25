@@ -169,7 +169,7 @@ export default function QueryInput({ updateState, name }) {
         return (
           <TextField
             {...params}
-            label={name === 'from' ? 'From where?' : 'To where?'}
+            label={name === 'startingAirport' ? 'From where?' : 'To where?'}
             variant='standard'
             InputProps={{
               ...params.InputProps,

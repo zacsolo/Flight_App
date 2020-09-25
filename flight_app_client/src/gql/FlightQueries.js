@@ -20,6 +20,10 @@ const GET_CHEAP_FLIGHTS = gql`
       returnDate
       inboundCarrierName
       id
+      outboundOrigin
+      outboundDestination
+      inboundOrigin
+      inboundDestination
     }
   }
 `;

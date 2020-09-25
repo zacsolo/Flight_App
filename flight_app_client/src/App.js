@@ -4,9 +4,6 @@ import { BrowserRouter, Route } from 'react-router-dom';
 
 import './App.css';
 
-import QueryInput from './components/QueryInput';
-import FlightForm from './components/FlightForm';
-
 function App() {
   return (
     <div className='App'>

@@ -34,7 +34,7 @@ module.exports = {
         outboundDate,
         inboundDate,
       } = args;
-      console.log({ ...args });
+
       //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
       //__Checking for Errors in Inputs__
       //__If invalid, throw UserInputError__
@@ -77,7 +77,8 @@ module.exports = {
         });
       }
       //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-
+      console.log(data.Places);
+      console.log(data.Quotes);
       //---Finding the single lowest price flight
       const lowestPriceAvailable = data.Quotes.reduce((acc, currFlight) => {
         if (acc.MinPrice > currFlight.MinPrice) {
@@ -90,7 +91,6 @@ module.exports = {
       const cheapFlightsArr = data.Quotes.filter(
         (flight) => flight.MinPrice === lowestPriceAvailable.MinPrice
       );
-      console.log('CHEAPEST FLIGHTS LENGTH-------->', cheapFlightsArr.length);
 
       //--Find the CarrierIds--
       //--Finding the outbound Carrier Id
@@ -140,7 +140,11 @@ module.exports = {
             price: flight.MinPrice,
             direct: flight.Direct,
             departureDate: flight.OutboundLeg.DepartureDate,
+            outboundOrigin: flight.OutboundLeg.OriginId,
+            outboundDestination: flight.OutboundLeg.DestinationId,
             returnDate: flight.InboundLeg.DepartureDate,
+            inboundOrigin: flight.OutboundLeg.OriginId,
+            inboundDestination: flight.OutboundLeg.DestinationId,
             returnFlightId: flight.InboundLeg.CarrierIds[0],
             outboundCarrierName: carrier[0][0].Name,
           });
@@ -149,6 +153,8 @@ module.exports = {
             price: flight.MinPrice,
             direct: flight.Direct,
             departureDate: flight.OutboundLeg.DepartureDate,
+            outboundOrigin: flight.OutboundLeg.OriginId,
+            outboundDestination: flight.OutboundLeg.DestinationId,
             outboundCarrierName: carrier[0][0].Name,
           });
         }
@@ -171,26 +177,65 @@ module.exports = {
           });
         });
       }
-      console.log('RETURN FLIGHT__', inboundFlightCarrierArr);
+
+      if (!inboundDate) {
+        outboundFlightCarrierArr.map((flight) => {
+          const outboundOr = data.Places.filter(
+            (place) => place.PlaceId === flight.outboundOrigin
+          );
+          const outboundDest = data.Places.filter(
+            (place) => place.PlaceId === flight.outboundDestination
+          );
+          return {
+            ...flight,
+            id: uuidv4(),
+            outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
+            outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
+          };
+        });
+      } else {
+        return inboundFlightCarrierArr.map((flight) => {
+          const outboundOr = data.Places.filter(
+            (place) => place.PlaceId === flight.outboundOrigin
+          );
+          const outboundDest = data.Places.filter(
+            (place) => place.PlaceId === flight.outboundDestination
+          );
+          const inboundOr = data.Places.filter(
+            (place) => place.PlaceId === flight.inboundOrigin
+          );
+          const inboundDest = data.Places.filter(
+            (place) => place.PlaceId === flight.inboundDestination
+          );
+          return {
+            ...flight,
+            id: uuidv4(),
+            outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
+            outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
+            inboundOrigin: `${inboundOr[0].Name}, ${inboundOr[0].IataCode}`,
+            inboundDestination: `${inboundDest[0].Name}, ${inboundDest[0].IataCode}`,
+          };
+        });
+      }
 
       //
       //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
       //---Returning all flights that match the lowest price flight
-      if (!inboundDate) {
-        return outboundFlightCarrierArr.map((flightInfo) => {
-          return {
-            ...flightInfo,
-            id: uuidv4(),
-          };
-        });
-      } else {
-        return inboundFlightCarrierArr.map((flightInfo) => {
-          return {
-            ...flightInfo,
-            id: uuidv4(),
-          };
-        });
-      }
+      // if (!inboundDate) {
+      //   return outboundFlightCarrierArr.map((flightInfo) => {
+      //     return {
+      //       ...flightInfo,
+      //       id: uuidv4(),
+      //     };
+      //   });
+      // } else {
+      //   return inboundFlightCarrierArr.map((flightInfo) => {
+      //     return {
+      //       ...flightInfo,
+      //       id: uuidv4(),
+      //     };
+      //   });
+      // }
     },
     //------------------//------------------//------------------//------------------//------------------
     //---OPEN ENDED SEARCH QUERY

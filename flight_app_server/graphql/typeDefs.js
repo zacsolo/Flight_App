@@ -32,6 +32,10 @@ const typeDefs = gql`
     outboundCarrierName: String!
     inboundCarrierName: String
     id: String!
+    outboundOrigin: String!
+    outboundDestination: String!
+    inboundOrigin: String
+    inboundDestination: String
   }
   type ExtendedFlightInfo {
     price: Int!

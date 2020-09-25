@@ -8,10 +8,10 @@ import { FormControl } from '@material-ui/core';
 
 export default function FlightForm({ error, searchForFlights }) {
   const [value, setValue] = useState({
-    from: '',
-    to: '',
-    departureDate: '',
-    returnDate: '',
+    startingAirport: '',
+    endingAirport: '',
+    outboundDate: '',
+    inboundDate: '',
   });
   const [disableDates, setDisableDates] = useState(false);
 
@@ -27,39 +27,34 @@ export default function FlightForm({ error, searchForFlights }) {
     setValue({ ...value, [name]: inputDate });
   };
 
-  const anytimeDates = (params) => {
+  const anytimeCheckbox = (params) => {
     console.log(params);
     setDisableDates(!disableDates);
     params
-      ? setValue({ ...value, departureDate: 'anytime', returnDate: 'anytime' })
-      : setValue({ ...value, departureDate: '', returnDate: '' });
+      ? setValue({ ...value, outboundDate: 'anytime', inboundDate: 'anytime' })
+      : setValue({ ...value, outboundDate: '', inboundDate: '' });
   };
 
   const handleSubmit = () => {
     console.log(value);
-    searchForFlights({
-      startingAirport: value.from,
-      endingAirport: value.to,
-      outboundDate: value.departureDate,
-      inboundDate: value.returnDate,
-    });
+    searchForFlights(value);
   };
 
   return (
     <FormControl>
-      <QueryInput name='from' updateState={updateState} />
-      <QueryInput name='to' updateState={updateState} />
+      <QueryInput name='startingAirport' updateState={updateState} />
+      <QueryInput name='endingAirport' updateState={updateState} />
       <BasicDatePicker
-        name='departureDate'
+        name='outboundDate'
         updateDate={updateDate}
         disableDates={disableDates}
       />
       <BasicDatePicker
-        name='returnDate'
+        name='inboundDate'
         updateDate={updateDate}
         disableDates={disableDates}
       />
-      <CheckBox anytimeDates={anytimeDates} />
+      <CheckBox anytimeCheckbox={anytimeCheckbox} />
       <Button onClick={handleSubmit} variant='outlined' color='secondary'>
         Let's Go!
       </Button>

@@ -5,6 +5,7 @@ import { useLazyQuery } from '@apollo/client';
 import moment from 'moment';
 
 import FlightForm from '../components/FlightForm';
+import FlightDisplayCard from '../components/FlightDisplayCard';
 
 export default function Home() {
   const [getFlights, { data, loading, error }] = useLazyQuery(
@@ -23,8 +24,10 @@ export default function Home() {
   return (
     <div className='App'>
       <FlightForm error={error} searchForFlights={searchForFlights} />
+      <FlightDisplayCard />
       {data && !loading && (
         <div>
+          {console.log(data.getCheapestFlightsForQuery)}
           {data.getCheapestFlightsForQuery.map((flight) => (
             <div
               key={flight.id}
@@ -53,15 +56,7 @@ export default function Home() {
           ))}
         </div>
       )}
-      {error && (
-        <ul>
-          {Object.values(error.graphQLErrors[0].extensions.errors).map(
-            (err) => (
-              <li key={Math.random()}>{err}</li>
-            )
-          )}
-        </ul>
-      )}
+      {error && console.log(error)}
     </div>
   );
 }
