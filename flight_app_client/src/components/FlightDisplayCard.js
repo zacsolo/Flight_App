@@ -11,6 +11,7 @@ import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutline
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import FlightTakeoffIcon from '@material-ui/icons/FlightTakeoff';
 import FlightLandIcon from '@material-ui/icons/FlightLand';
+import '../FlightDisplayCard.css';
 import moment from 'moment';
 
 export default function FlightDisplayCard({
@@ -28,13 +29,7 @@ export default function FlightDisplayCard({
   },
 }) {
   return (
-    <Card
-      elevation={3}
-      style={{
-        display: 'flex',
-        justifyContent: 'space-evenly',
-        alignItems: 'center',
-      }}>
+    <Card elevation={3} style={{ marginBottom: 10 }}>
       {/* PRICE CARD START */}
       <CardContent
         style={{
@@ -44,7 +39,7 @@ export default function FlightDisplayCard({
           padding: 0,
         }}>
         <CardContent>
-          <Typography color='primary' variant='h4'>
+          <Typography color='primary' variant='h2'>
             ${price}
           </Typography>
           <Typography variant='body2' color='textSecondary'>
@@ -56,7 +51,7 @@ export default function FlightDisplayCard({
           style={{
             padding: 0,
             display: 'flex',
-            flexDirection: 'column',
+            justifyContent: 'space-around',
           }}>
           <Button color='primary' startIcon={<ShoppingCartOutlinedIcon />}>
             Buy
@@ -67,7 +62,7 @@ export default function FlightDisplayCard({
         </CardContent>
       </CardContent>
       {/* PRICE CARD END */}
-      <CardContent style={{ width: '100%', padding: '16px' }}>
+      <CardContent style={{ width: '100%', padding: '0' }}>
         <CardContent
           style={{
             display: 'flex',
@@ -97,6 +92,7 @@ export default function FlightDisplayCard({
               {outboundOrigin.split(',')[1]}
             </Typography>
             {direct ? <RemoveIcon /> : <LinearScaleIcon />}
+
             <Typography variant='h6' component='p'>
               {outboundDestination.split(',')[1]}
             </Typography>
@@ -109,6 +105,7 @@ export default function FlightDisplayCard({
             flexDirection: 'row',
             justifyContent: 'space-between',
             alignItems: 'center',
+            padding: 16,
           }}>
           <CardContent align='left' style={{ padding: 0 }}>
             <Typography variant='subtitle2' color='textSecondary'>
@@ -133,6 +130,7 @@ export default function FlightDisplayCard({
               {inboundOrigin.split(',')[1]}
             </Typography>
             {direct ? <RemoveIcon /> : <LinearScaleIcon />}
+
             <Typography variant='h6' component='p'>
               {inboundDestination.split(',')[1]}
             </Typography>

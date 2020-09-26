@@ -24,6 +24,7 @@ export default function Home() {
   return (
     <div className='App'>
       <FlightForm error={error} searchForFlights={searchForFlights} />
+
       {data && !loading && (
         <div>
           {data.getCheapestFlightsForQuery.map((f) => (
