@@ -33,6 +33,9 @@ export default function FlightDisplayCard({
     <>
       {returnDate ? (
         <Card elevation={3} style={{ marginBottom: 10 }}>
+          <CardContent>
+            <Typography variant='h4'>{cityName}</Typography>
+          </CardContent>
           {/* PRICE CARD START */}
           <CardContent
             style={{

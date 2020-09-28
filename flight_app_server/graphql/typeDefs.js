@@ -17,7 +17,7 @@ const typeDefs = gql`
     roundTripFlightToAnywhere(
       startingAirport: String!
       outboundDate: String!
-      inboundDate: String
+      inboundDate: String!
     ): [Flight]
   }
   type User {
@@ -35,7 +35,7 @@ const typeDefs = gql`
     departureDate: String!
     outboundCarrierName: String!
     id: String!
-
+    cityName: String!
     returnDate: String
     inboundCarrierName: String
     outboundOrigin: String!

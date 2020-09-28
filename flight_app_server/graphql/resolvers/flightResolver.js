@@ -189,6 +189,7 @@ module.exports = {
           return {
             ...flight,
             id: uuidv4(),
+            cityName: outboundDest[0].CityName,
             outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
             outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
           };
@@ -210,6 +211,7 @@ module.exports = {
           return {
             ...flight,
             id: uuidv4(),
+            cityName: outboundDest[0].CityName,
             outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
             outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
             inboundOrigin: `${inboundOr[0].Name}, ${inboundOr[0].IataCode}`,
@@ -517,6 +519,7 @@ module.exports = {
           return {
             ...flight,
             id: uuidv4(),
+            cityName: outboundDest[0].CityName,
             outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
             outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
           };
@@ -535,9 +538,11 @@ module.exports = {
           const inboundDest = data.Places.filter(
             (place) => place.PlaceId === flight.inboundDestination
           );
+          console.log(outboundDest);
           return {
             ...flight,
             id: uuidv4(),
+            cityName: outboundDest[0].CityName,
             outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
             outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
             inboundOrigin: `${inboundOr[0].Name}, ${inboundOr[0].IataCode}`,

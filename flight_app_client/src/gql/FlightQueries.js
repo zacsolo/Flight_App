@@ -20,6 +20,7 @@ const GET_CHEAP_FLIGHTS = gql`
       returnDate
       inboundCarrierName
       id
+      cityName
       outboundOrigin
       outboundDestination
       inboundOrigin
@@ -28,7 +29,7 @@ const GET_CHEAP_FLIGHTS = gql`
   }
 `;
 
-const GET_FLIGHT_ANYWHERE = gql`
+const GET_ONE_WAY_FLIGHT_ANYWHERE = gql`
   query cheapestFlightsToAnywhere(
     $startingAirport: String!
     $searchDate: String!
@@ -55,4 +56,35 @@ const GET_FLIGHT_ANYWHERE = gql`
   }
 `;
 
-export { GET_CHEAP_FLIGHTS, GET_FLIGHT_ANYWHERE };
+const GET_ROUND_TRIP_FLIGHT_ANYWHERE = gql`
+  query roundTripFlightToAnywhere(
+    $startingAirport: String!
+    $outboundDate: String!
+    $inboundDate: String!
+  ) {
+    roundTripFlightToAnywhere(
+      startingAirport: $startingAirport
+      outboundDate: $outboundDate
+      inboundDate: $inboundDate
+    ) {
+      price
+      direct
+      departureDate
+      outboundCarrierName
+      returnDate
+      inboundCarrierName
+      id
+      cityName
+      outboundOrigin
+      outboundDestination
+      inboundOrigin
+      inboundDestination
+    }
+  }
+`;
+
+export {
+  GET_CHEAP_FLIGHTS,
+  GET_ONE_WAY_FLIGHT_ANYWHERE,
+  GET_ROUND_TRIP_FLIGHT_ANYWHERE,
+};
