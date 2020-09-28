@@ -50,7 +50,7 @@ export default function FlightForm({
   };
 
   const handleSubmit = () => {
-    console.log(value);
+    console.log('STATE BEING SEARCHED FOR', value);
 
     searchForFlights(value);
   };
@@ -70,13 +70,11 @@ export default function FlightForm({
             updateDate={updateDate}
             disableDates={disableDates}
           />
-          {!value.oneWay && (
-            <BasicDatePicker
-              name='inboundDate'
-              updateDate={updateDate}
-              disableDates={disableDates}
-            />
-          )}
+          <BasicDatePicker
+            name='inboundDate'
+            updateDate={updateDate}
+            disableDates={disableDates}
+          />
           <CheckBox
             anytimeCheckbox={anytimeCheckbox}
             OneWayCheckBox={handleOneWayCheckBox}
@@ -94,13 +92,11 @@ export default function FlightForm({
             updateDate={updateDate}
             disableDates={disableDates}
           />
-          {!value.oneWay && (
-            <BasicDatePicker
-              name='inboundDate'
-              updateDate={updateDate}
-              disableDates={disableDates}
-            />
-          )}
+          <BasicDatePicker
+            name='inboundDate'
+            updateDate={updateDate}
+            disableDates={disableDates}
+          />
           <CheckBox
             anytimeCheckbox={anytimeCheckbox}
             OneWayCheckBox={handleOneWayCheckBox}

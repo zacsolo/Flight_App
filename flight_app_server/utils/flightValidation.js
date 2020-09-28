@@ -30,7 +30,10 @@ const flightQueryValidation = (
 
   if (isEmpty(endingAirport)) {
     errors.endingAirport = 'Can not be empty';
-  } else if (endingAirport.split('-')[1] !== 'sky') {
+  } else if (
+    endingAirport.split('-')[1] !== 'sky' &&
+    endingAirport.toLowerCase() !== 'anywhere'
+  ) {
     errors.endingAirport = 'Improper format, must end in sky';
   }
 

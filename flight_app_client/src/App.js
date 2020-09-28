@@ -15,13 +15,13 @@ function App() {
       <FormControlLabel
         control={
           <Checkbox
-            checked={!simple}
+            checked={simple}
             onChange={() => setSimple(!simple)}
             name='simpleSearch'
             color='primary'
           />
         }
-        label='Advanced Search'
+        label='Adventure Mode'
       />
       {/* <BrowserRouter>
         <Route path='/' exact component={AnywhereFlight}></Route>

@@ -11,7 +11,7 @@ export default function Home() {
   );
 
   const searchForFlights = (flightQuery) => {
-    console.log(flightQuery);
+    console.log('QUERY', flightQuery);
     getFlights({
       variables: {
         ...flightQuery,
@@ -21,7 +21,6 @@ export default function Home() {
   console.log(data);
   return (
     <div className='App'>
-      <h3>Expanded Search</h3>
       <FlightForm error={error} searchForFlights={searchForFlights} />
 
       {data && !loading && (

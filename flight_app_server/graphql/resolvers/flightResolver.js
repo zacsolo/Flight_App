@@ -219,7 +219,7 @@ module.exports = {
       }
     },
     //------------------//------------------//------------------//------------------//------------------
-    //---OPEN ENDED SEARCH QUERY
+    //---ONE WAY TO ANYWHERE
     //---from a chosen airport to ANYWHERE
     //
     cheapestFlightsToAnywhere: async (
@@ -365,15 +365,186 @@ module.exports = {
           outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
         };
       });
+    },
+    //
+    ///////////----------------------ROUND TRIP TO ANYWHERE----------------------------/////////
+    //
+    roundTripFlightToAnywhere: async (
+      root,
+      { startingAirport, outboundDate, inboundDate, amountOfResults }
+    ) => {
+      //--__Default values for searchData and amountOfResults__--
+      if (!outboundDate || outboundDate.trim() === '') outboundDate = 'anytime';
+      if (!inboundDate || inboundDate.trim() === '') inboundDate = 'anytime';
+      if (!amountOfResults || amountOfResults < 10) amountOfResults = 10;
+      const endingAirport = 'anywhere';
+      //__ERROR HANDLING FOR USER INPUTS________________________________
+      const { errors, valid } = flightQueryValidation(
+        startingAirport,
+        endingAirport,
+        outboundDate,
+        inboundDate
+      );
 
-      //--------------------------------------------------
-      //Final return of all nested flight data
-      // return carrierNestedFlight.map((flightInfo) => {
-      //   return {
-      //     ...flightInfo,
-      //     id: uuidv4(),
-      //   };
-      // });
+      if (!valid) {
+        throw new UserInputError('Errors', { errors });
+      }
+
+      const { data } = await axios({
+        method: 'GET',
+        url: `${COMBINE_ROUTES_URL}/${startingAirport}/anywhere/${outboundDate}/${inboundDate}`,
+        headers: {
+          'content-type': 'application/octet-stream',
+          'x-rapidapi-host': process.env.HOST,
+          'x-rapidapi-key': process.env.KEY,
+          useQueryString: true,
+        },
+      });
+      //---SOME MAGIC I DONT UNDERSTAND--------
+      //--Sorted Array lowest first--
+      const compareFlights = (a, b) => {
+        let comparison = 0;
+        if (a.MinPrice > b.MinPrice) {
+          comparison = 1;
+        } else if (a.MinPrice < b.MinPrice) {
+          comparison = -1;
+        }
+        return comparison;
+      };
+
+      const lowestPriceFirst = data.Quotes.sort(compareFlights);
+
+      const sortedBelowCertainPrice = lowestPriceFirst.filter(
+        (flight) =>
+          flight.MinPrice <=
+          lowestPriceFirst[Number(amountOfResults - 1)].MinPrice
+      );
+
+      //--Find the CarrierIds--
+      //--Finding the outbound Carrier Id
+      const outboundId = sortedBelowCertainPrice.map((flight) => {
+        return flight.OutboundLeg.CarrierIds;
+      });
+
+      //__If there is a return flight
+      //__Finding the return flight Carrier Id
+      let inboundId = null;
+      if (inboundDate) {
+        inboundId = sortedBelowCertainPrice.map((flight) => {
+          return flight.InboundLeg.CarrierIds;
+        });
+      }
+      //--Returning the corresponding carrier object
+      const findCarrierInfoOutbound = outboundId.map((id) => {
+        return data.Carriers.filter(
+          (flight) => flight.CarrierId === Number(id)
+        );
+      });
+
+      //__If there is a return flight
+      //--Returning the corresponding carrier object
+      let findCarrierInfoInbound = null;
+      if (inboundDate) {
+        findCarrierInfoInbound = inboundId.map((id) => {
+          return data.Carriers.filter(
+            (flight) => flight.CarrierId === Number(id)
+          );
+        });
+      }
+
+      //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+      //FIND THE CORRESPONDING OUTBOUND CARRIER AND NEST IT INTO RETURN OBJ
+      //
+      const outboundFlightCarrierArr = [];
+
+      //--Map over array of flights matching the cheapest one
+      //--Filter the array of Carriers--
+      sortedBelowCertainPrice.map((flight) => {
+        const carrier = findCarrierInfoOutbound.filter(
+          (car) => car[0].CarrierId === flight.OutboundLeg.CarrierIds[0]
+        );
+        if (inboundDate) {
+          outboundFlightCarrierArr.push({
+            price: flight.MinPrice,
+            direct: flight.Direct,
+            departureDate: flight.OutboundLeg.DepartureDate,
+            outboundOrigin: flight.OutboundLeg.OriginId,
+            outboundDestination: flight.OutboundLeg.DestinationId,
+            returnDate: flight.InboundLeg.DepartureDate,
+            inboundOrigin: flight.InboundLeg.OriginId,
+            inboundDestination: flight.InboundLeg.DestinationId,
+            returnFlightId: flight.InboundLeg.CarrierIds[0],
+            outboundCarrierName: carrier[0][0].Name,
+          });
+        } else {
+          outboundFlightCarrierArr.push({
+            price: flight.MinPrice,
+            direct: flight.Direct,
+            departureDate: flight.OutboundLeg.DepartureDate,
+            outboundOrigin: flight.OutboundLeg.OriginId,
+            outboundDestination: flight.OutboundLeg.DestinationId,
+            outboundCarrierName: carrier[0][0].Name,
+          });
+        }
+      });
+
+      //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
+      //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+      //FIND THE CORRESPONDING INBOUND CARRIER AND NEST IT INTO RETURN OBJ
+      //
+      const inboundFlightCarrierArr = [];
+      if (inboundDate) {
+        outboundFlightCarrierArr.map((flight) => {
+          const carrier = findCarrierInfoInbound.filter(
+            (car) => car[0].CarrierId === flight.returnFlightId
+          );
+          return inboundFlightCarrierArr.push({
+            ...flight,
+            inboundCarrierName: carrier[0][0].Name,
+          });
+        });
+      }
+
+      if (!inboundDate) {
+        outboundFlightCarrierArr.map((flight) => {
+          const outboundOr = data.Places.filter(
+            (place) => place.PlaceId === flight.outboundOrigin
+          );
+          const outboundDest = data.Places.filter(
+            (place) => place.PlaceId === flight.outboundDestination
+          );
+          return {
+            ...flight,
+            id: uuidv4(),
+            outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
+            outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
+          };
+        });
+      } else {
+        return inboundFlightCarrierArr.map((flight) => {
+          const outboundOr = data.Places.filter(
+            (place) => place.PlaceId === flight.outboundOrigin
+          );
+          const outboundDest = data.Places.filter(
+            (place) => place.PlaceId === flight.outboundDestination
+          );
+          const inboundOr = data.Places.filter(
+            (place) => place.PlaceId === flight.inboundOrigin
+          );
+          const inboundDest = data.Places.filter(
+            (place) => place.PlaceId === flight.inboundDestination
+          );
+          return {
+            ...flight,
+            id: uuidv4(),
+            outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
+            outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
+            inboundOrigin: `${inboundOr[0].Name}, ${inboundOr[0].IataCode}`,
+            inboundDestination: `${inboundDest[0].Name}, ${inboundDest[0].IataCode}`,
+          };
+        });
+      }
     },
   },
 };

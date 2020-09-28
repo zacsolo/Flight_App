@@ -14,6 +14,11 @@ const typeDefs = gql`
       searchDate: String!
       amountOfResults: Int
     ): [ExtendedFlightInfo]
+    roundTripFlightToAnywhere(
+      startingAirport: String!
+      outboundDate: String!
+      inboundDate: String
+    ): [Flight]
   }
   type User {
     id: ID!

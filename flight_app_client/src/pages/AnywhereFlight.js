@@ -13,6 +13,7 @@ export default function AnywhereFlight() {
   );
 
   const searchForFlights = (flightQuery) => {
+    console.log('QUERY', flightQuery);
     getAnywhereFlights({
       variables: {
         startingAirport: flightQuery.startingAirport,
@@ -28,7 +29,6 @@ export default function AnywhereFlight() {
 
   return (
     <div className='App'>
-      <h3>Explore Destinations</h3>
       <FlightForm
         error={error}
         searchForFlights={searchForFlights}
