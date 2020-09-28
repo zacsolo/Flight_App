@@ -217,25 +217,6 @@ module.exports = {
           };
         });
       }
-
-      //
-      //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
-      //---Returning all flights that match the lowest price flight
-      // if (!inboundDate) {
-      //   return outboundFlightCarrierArr.map((flightInfo) => {
-      //     return {
-      //       ...flightInfo,
-      //       id: uuidv4(),
-      //     };
-      //   });
-      // } else {
-      //   return inboundFlightCarrierArr.map((flightInfo) => {
-      //     return {
-      //       ...flightInfo,
-      //       id: uuidv4(),
-      //     };
-      //   });
-      // }
     },
     //------------------//------------------//------------------//------------------//------------------
     //---OPEN ENDED SEARCH QUERY
@@ -245,10 +226,11 @@ module.exports = {
       root,
       { startingAirport, searchDate, amountOfResults }
     ) => {
+      console.log('BEFORE', amountOfResults);
       //--__Default values for searchData and amountOfResults__--
       if (!searchDate || searchDate.trim() === '') searchDate = 'anytime';
-      if (!amountOfResults || amountOfResults.toString().length < 10)
-        amountOfResults = 10;
+      if (!amountOfResults || amountOfResults < 10) amountOfResults = 10;
+      console.log('AFTER', amountOfResults);
 
       //__ERROR HANDLING FOR USER INPUTS________________________________
       const { errors, valid } = flightToAnywhereValidation(
@@ -274,6 +256,10 @@ module.exports = {
         },
       });
 
+      if (amountOfResults > result.data.Quotes.length) {
+        amountOfResults = result.data.Quotes.length;
+      }
+
       //---SOME MAGIC I DONT UNDERSTAND--------
       //--Sorted Array lowest first--
       const compareFlights = (a, b) => {
@@ -287,6 +273,11 @@ module.exports = {
       };
 
       const lowestPriceFirst = result.data.Quotes.sort(compareFlights);
+      console.log(
+        lowestPriceFirst[0],
+        lowestPriceFirst[1],
+        lowestPriceFirst[2]
+      );
       //----------------------------------------
       //
       //
@@ -330,6 +321,8 @@ module.exports = {
           price: f.MinPrice,
           direct: f.Direct,
           departureDate: f.OutboundLeg.DepartureDate,
+          outboundOrigin: f.OutboundLeg.OriginId,
+          outboundDestination: f.OutboundLeg.DestinationId,
           CarrierIds: f.OutboundLeg.CarrierIds[0],
           placeId: destinationForReturn.PlaceId,
           placeName: destinationForReturn.Name,
@@ -340,6 +333,7 @@ module.exports = {
 
         return destinationNestedFlightsArr;
       });
+
       //----------------------------------------------------------
       //
       //--Combines carrier and destinationNestedFlights together into single Objects
@@ -357,14 +351,29 @@ module.exports = {
         });
       });
 
-      //--------------------------------------------------
-      //Final return of all nested flight data
-      return carrierNestedFlight.map((flightInfo) => {
+      return carrierNestedFlight.map((flight) => {
+        const outboundOr = result.data.Places.filter(
+          (place) => place.PlaceId === flight.outboundOrigin
+        );
+        const outboundDest = result.data.Places.filter(
+          (place) => place.PlaceId === flight.outboundDestination
+        );
         return {
-          ...flightInfo,
+          ...flight,
           id: uuidv4(),
+          outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
+          outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
         };
       });
+
+      //--------------------------------------------------
+      //Final return of all nested flight data
+      // return carrierNestedFlight.map((flightInfo) => {
+      //   return {
+      //     ...flightInfo,
+      //     id: uuidv4(),
+      //   };
+      // });
     },
   },
 };

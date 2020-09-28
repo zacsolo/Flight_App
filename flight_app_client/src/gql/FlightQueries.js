@@ -28,4 +28,31 @@ const GET_CHEAP_FLIGHTS = gql`
   }
 `;
 
-export { GET_CHEAP_FLIGHTS };
+const GET_FLIGHT_ANYWHERE = gql`
+  query cheapestFlightsToAnywhere(
+    $startingAirport: String!
+    $searchDate: String!
+    $amountOfResults: Int
+  ) {
+    cheapestFlightsToAnywhere(
+      startingAirport: $startingAirport
+      searchDate: $searchDate
+      amountOfResults: $amountOfResults
+    ) {
+      price
+      direct
+      departureDate
+      placeId
+      placeName
+      cityName
+      countryName
+      IataCode
+      outboundCarrierName
+      outboundOrigin
+      outboundDestination
+      id
+    }
+  }
+`;
+
+export { GET_CHEAP_FLIGHTS, GET_FLIGHT_ANYWHERE };

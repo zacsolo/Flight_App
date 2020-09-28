@@ -1,16 +1,19 @@
-import React from 'react';
+import React, { useState } from 'react';
 import FormGroup from '@material-ui/core/FormGroup';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import Checkbox from '@material-ui/core/Checkbox';
 
-export default function CheckboxLabels({ anytimeCheckbox }) {
-  const [state, setState] = React.useState({
-    anytime: false,
-  });
+export default function CheckboxLabels({ anytimeCheckbox, OneWayCheckBox }) {
+  const [anytime, setAnytime] = useState(false);
+  const [oneWay, setOneWay] = useState(false);
 
-  const handleChange = (event) => {
-    anytimeCheckbox(event.target.checked);
-    setState({ ...state, [event.target.name]: event.target.checked });
+  const handleAnytime = (e) => {
+    anytimeCheckbox(!anytime);
+    setAnytime(!anytime);
+  };
+  const handleOneWay = (e) => {
+    OneWayCheckBox(!oneWay);
+    setOneWay(!oneWay);
   };
 
   return (
@@ -18,13 +21,24 @@ export default function CheckboxLabels({ anytimeCheckbox }) {
       <FormControlLabel
         control={
           <Checkbox
-            checked={state.anytime}
-            onChange={handleChange}
+            checked={anytime}
+            onChange={handleAnytime}
             name='anytime'
             color='primary'
           />
         }
         label='try anytime!'
+      />
+      <FormControlLabel
+        control={
+          <Checkbox
+            checked={oneWay}
+            onChange={handleOneWay}
+            name='one-way'
+            color='primary'
+          />
+        }
+        label='one-way'
       />
     </FormGroup>
   );

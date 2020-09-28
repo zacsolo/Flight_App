@@ -10,8 +10,8 @@ const typeDefs = gql`
     ): [Flight]
     findAirport(airportSearch: String!): [Place]
     cheapestFlightsToAnywhere(
-      startingAirport: String
-      searchDate: String
+      startingAirport: String!
+      searchDate: String!
       amountOfResults: Int
     ): [ExtendedFlightInfo]
   }
@@ -28,10 +28,11 @@ const typeDefs = gql`
     price: Int!
     direct: Boolean!
     departureDate: String!
-    returnDate: String
     outboundCarrierName: String!
-    inboundCarrierName: String
     id: String!
+
+    returnDate: String
+    inboundCarrierName: String
     outboundOrigin: String!
     outboundDestination: String!
     inboundOrigin: String
@@ -41,13 +42,16 @@ const typeDefs = gql`
     price: Int!
     direct: Boolean!
     departureDate: String!
+    outboundCarrierName: String
+    outboundOrigin: String!
+    outboundDestination: String!
+    id: String!
+
     placeId: Int
     placeName: String
     cityName: String
     countryName: String!
     IataCode: String
-    outboundCarrierName: String
-    id: String!
   }
   type Place {
     placeId: String!
