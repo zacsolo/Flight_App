@@ -18,6 +18,7 @@ const typeDefs = gql`
       startingAirport: String!
       outboundDate: String!
       inboundDate: String!
+      amountOfResults: String
     ): [Flight]
   }
   type User {

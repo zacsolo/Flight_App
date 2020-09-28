@@ -1,4 +1,5 @@
 import React from 'react';
+
 import {
   GET_ONE_WAY_FLIGHT_ANYWHERE,
   GET_ROUND_TRIP_FLIGHT_ANYWHERE,
@@ -19,6 +20,7 @@ export default function AnywhereFlight() {
 
   const searchForFlights = (flightQuery) => {
     if (flightQuery.inboundDate) {
+      console.log(flightQuery.inboundDate);
       roundTripToAnywhereQuery({
         variables: {
           startingAirport: flightQuery.startingAirport,

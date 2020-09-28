@@ -35,18 +35,52 @@ export default function FlightForm({
   };
 
   const anytimeCheckbox = (checked) => {
-    console.log('SENT FROM CHECKBOX', checked);
-    setDisableDates(!disableDates);
-    checked
-      ? setValue({ ...value, outboundDate: 'anytime', inboundDate: 'anytime' })
-      : setValue({ ...value, outboundDate: '', inboundDate: '' });
+    if (value.oneWay) {
+      setDisableDates(!disableDates);
+      checked
+        ? setValue({
+            ...value,
+            outboundDate: 'anytime',
+            inboundDate: '',
+          })
+        : setValue({ ...value, outboundDate: '', inboundDate: '' });
+      console.log('SET STATE', value);
+    } else if (!value.oneWay) {
+      console.log('SENT FROM CHECKBOX', checked);
+      setDisableDates(!disableDates);
+      checked
+        ? setValue({
+            ...value,
+            outboundDate: 'anytime',
+            inboundDate: 'anytime',
+          })
+        : setValue({ ...value, outboundDate: '', inboundDate: '' });
+    }
   };
 
   const handleOneWayCheckBox = (checked) => {
-    console.log('SENT FROM CHECKBOX', checked);
-    checked
-      ? setValue({ ...value, oneWay: true })
-      : setValue({ ...value, oneWay: false });
+    if (disableDates) {
+      if (checked) {
+        setValue({
+          ...value,
+          oneWay: checked,
+          inboundDate: '',
+          outboundDate: 'anytime',
+        });
+      } else {
+        setValue({
+          ...value,
+          oneWay: checked,
+          inboundDate: 'anytime',
+          outboundDate: 'anytime',
+        });
+      }
+    } else {
+      setValue({
+        ...value,
+        oneWay: checked,
+      });
+    }
   };
 
   const handleSubmit = () => {
@@ -54,7 +88,8 @@ export default function FlightForm({
 
     searchForFlights(value);
   };
-
+  console.log('Current State', value);
+  console.log('ARE DATES DISABLED', disableDates);
   return (
     <>
       {noDestinationPicker ? (
@@ -73,6 +108,7 @@ export default function FlightForm({
           <BasicDatePicker
             name='inboundDate'
             updateDate={updateDate}
+            disableForOneWay={value.oneWay}
             disableDates={disableDates}
           />
           <CheckBox
@@ -95,6 +131,7 @@ export default function FlightForm({
           <BasicDatePicker
             name='inboundDate'
             updateDate={updateDate}
+            disableForOneWay={value.oneWay}
             disableDates={disableDates}
           />
           <CheckBox

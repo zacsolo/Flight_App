@@ -378,7 +378,7 @@ module.exports = {
       //--__Default values for searchData and amountOfResults__--
       if (!outboundDate || outboundDate.trim() === '') outboundDate = 'anytime';
       if (!inboundDate || inboundDate.trim() === '') inboundDate = 'anytime';
-      if (!amountOfResults || amountOfResults < 10) amountOfResults = 10;
+      if (!amountOfResults || amountOfResults < 10) amountOfResults = 50;
       const endingAirport = 'anywhere';
       //__ERROR HANDLING FOR USER INPUTS________________________________
       const { errors, valid } = flightQueryValidation(

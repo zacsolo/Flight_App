@@ -7,16 +7,23 @@ function BasicDatePicker(props) {
   const [anytimeName, setAnytimeName] = useState('');
 
   useEffect(() => {
-    if (props.disableDates) {
+    if (props.disableDates && props.disableForOneWay) {
+      handleDateChange(null);
+      setAnytimeName('One-way');
+    }
+    if (props.disableDates && !props.disableForOneWay) {
       handleDateChange(null);
       setAnytimeName('Anytime');
-    } else {
+    } else if (props.disableForOneWay && !props.disableDates) {
+      setAnytimeName('One-way');
+    } else if (!props.disableForOneWay && !props.disableDates) {
       setAnytimeName('');
     }
-  }, [props.disableDates]);
+  }, [props.disableDates, props.disableForOneWay]);
+
   return (
     <DatePicker
-      disabled={props.disableDates ? true : false}
+      disabled={props.disableForOneWay || (props.disableDates && true)}
       autoOk
       disablePast
       variant='inline'
@@ -24,13 +31,14 @@ function BasicDatePicker(props) {
       views={['year', 'month']}
       onAccept={(date) => {
         const newDate = moment(date._d).format('YYYY/MM').split('/').join('-');
-        console.log(newDate);
         props.updateDate(newDate, props.name);
         return date;
       }}
       label={
         anytimeName === 'Anytime'
           ? 'Anytime'
+          : anytimeName === 'One-way'
+          ? 'One-way'
           : props.name === 'outboundDate'
           ? 'Departure'
           : 'Return'

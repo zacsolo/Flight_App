@@ -45,7 +45,7 @@ export default function FlightDisplayCard({
               padding: 0,
             }}>
             <CardContent>
-              <Typography color='primary' variant='h2'>
+              <Typography color='primary' variant='h4'>
                 ${price}
               </Typography>
               <Typography variant='body2' color='textSecondary'>
