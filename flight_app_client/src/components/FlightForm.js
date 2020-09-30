@@ -10,6 +10,7 @@ export default function FlightForm({
   error,
   searchForFlights,
   noDestinationPicker,
+  toggleOpen,
 }) {
   const [value, setValue] = useState({
     startingAirport: '',
@@ -86,6 +87,10 @@ export default function FlightForm({
   };
 
   const handleSubmit = () => {
+    if (toggleOpen) {
+      toggleOpen();
+    }
+
     console.log('STATE BEING SEARCHED FOR', value);
 
     searchForFlights(value);

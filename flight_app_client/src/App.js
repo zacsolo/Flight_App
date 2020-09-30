@@ -9,7 +9,7 @@ import { Checkbox } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 function App() {
-  const [simple, setSimple] = useState(true);
+  const [simple, setSimple] = useState(false);
   return (
     <div className='App'>
       <FormControlLabel
@@ -23,7 +23,7 @@ function App() {
         }
         label='Adventure Mode'
       />
-      {!simple ? <AnywhereFlight /> : <ChooseDestinationFlight />}
+      {simple ? <AnywhereFlight /> : <ChooseDestinationFlight />}
     </div>
   );
 }

@@ -8,10 +8,11 @@ import { useLazyQuery } from '@apollo/client';
 
 import FlightForm from '../components/FlightForm';
 import FlightDisplayCard from '../components/FlightDisplayCard';
+import SearchDrawer from '../components/SearchDrawer';
 
 export default function AnywhereFlight() {
   const [oneWayOptions, setOneWayOptions] = useState([]);
-
+  const [initialSearch, setInitialSearch] = useState(true);
   const [roundTripOptions, setRoundTripOptions] = useState([]);
 
   const [oneWayToAnywhereQuery, { data, loading, error }] = useLazyQuery(
@@ -29,25 +30,8 @@ export default function AnywhereFlight() {
     onCompleted: (data) => setRoundTripOptions(data.roundTripFlightToAnywhere),
   });
 
-  //
-  //
-  //
-  //------------------------------------------------------------------------
-  //Need to make sure that there is only
-  //ONE FORM OF DATA IN THIS COMPONENT AT A TIME
-  //Rendering Data based on the last fetch, apollo client
-  //caches the data, so there is no updating. Need to flush, or seperate out into different componets
-  //1. Use local state to hold recently fetched data. Use
-  //useEffect to delete old data when new data comes in (dont know how to do, yet)
-  //2. Seperate a round trip and a one way into two different components
-  //This may cause issues with the form, or rendering new forms (actually almost certainly will)
-
-  //
-  //
-  //
-  //------------------------------------------------------------------------
-
   const searchForFlights = (flightQuery) => {
+    setInitialSearch(false);
     setOneWayOptions([]);
     setRoundTripOptions([]);
     if (flightQuery.inboundDate) {
@@ -78,11 +62,22 @@ export default function AnywhereFlight() {
 
   return (
     <div className='App'>
-      <FlightForm
-        error={error}
-        searchForFlights={searchForFlights}
-        noDestinationPicker={true}
-      />
+      {initialSearch ? (
+        <FlightForm
+          error={error}
+          searchForFlights={searchForFlights}
+          noDestinationPicker={true}
+        />
+      ) : (
+        <SearchDrawer>
+          <FlightForm
+            error={error}
+            searchForFlights={searchForFlights}
+            noDestinationPicker={true}
+          />
+        </SearchDrawer>
+      )}
+
       {data && !loading && (
         <div>
           {oneWayOptions.map((f) => (

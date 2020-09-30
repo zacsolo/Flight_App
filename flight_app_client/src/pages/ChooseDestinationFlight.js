@@ -7,9 +7,11 @@ import { useLazyQuery } from '@apollo/client';
 
 import FlightForm from '../components/FlightForm';
 import FlightDisplayCard from '../components/FlightDisplayCard';
+import SearchDrawer from '../components/SearchDrawer';
 
 export default function ChooseDestinationFlight() {
   const [oneWayOptions, setOneWayOptions] = useState([]);
+  const [initialSearch, setInitialSearch] = useState(true);
   const [roundTripOptions, setRoundTripOptions] = useState([]);
 
   const [getRoundTripFlights, { data, loading, error }] = useLazyQuery(
@@ -39,6 +41,7 @@ export default function ChooseDestinationFlight() {
 
   const searchForFlights = (flightQuery) => {
     console.log(flightQuery);
+    setInitialSearch(false);
     setOneWayOptions([]);
     setRoundTripOptions([]);
     if (flightQuery.inboundDate !== '') {
@@ -63,7 +66,13 @@ export default function ChooseDestinationFlight() {
 
   return (
     <div className='App'>
-      <FlightForm error={error} searchForFlights={searchForFlights} />
+      {initialSearch ? (
+        <FlightForm error={error} searchForFlights={searchForFlights} />
+      ) : (
+        <SearchDrawer>
+          <FlightForm error={error} searchForFlights={searchForFlights} />
+        </SearchDrawer>
+      )}
       {data && !loading && (
         <div>
           {roundTripOptions.map((f) => (
