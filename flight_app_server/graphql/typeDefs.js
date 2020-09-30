@@ -6,7 +6,12 @@ const typeDefs = gql`
       startingAirport: String!
       endingAirport: String!
       outboundDate: String!
-      inboundDate: String
+      inboundDate: String!
+    ): [Flight]
+    getFlightsWithDestOneWay(
+      startingAirport: String!
+      endingAirport: String!
+      outboundDate: String!
     ): [Flight]
     findAirport(airportSearch: String!): [Place]
     cheapestFlightsToAnywhere(

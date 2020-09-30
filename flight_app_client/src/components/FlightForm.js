@@ -59,6 +59,8 @@ export default function FlightForm({
   };
 
   const handleOneWayCheckBox = (checked) => {
+    console.log('DATES DISABLED', disableDates);
+    console.log('checked', checked);
     if (disableDates) {
       if (checked) {
         setValue({
@@ -88,8 +90,7 @@ export default function FlightForm({
 
     searchForFlights(value);
   };
-  // console.log('Current State', value);
-  // console.log('ARE DATES DISABLED', disableDates);
+
   return (
     <>
       {noDestinationPicker ? (

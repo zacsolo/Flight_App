@@ -1,17 +1,44 @@
 import { gql } from '@apollo/client';
 
-const GET_CHEAP_FLIGHTS = gql`
+const GET_CHEAPEST_ROUNDTRIP_WITH_DEST = gql`
   query getFlightsWithDestRoundTrip(
     $startingAirport: String!
     $endingAirport: String!
     $outboundDate: String!
-    $inboundDate: String
+    $inboundDate: String!
   ) {
     getFlightsWithDestRoundTrip(
       startingAirport: $startingAirport
       endingAirport: $endingAirport
       outboundDate: $outboundDate
       inboundDate: $inboundDate
+    ) {
+      price
+      direct
+      departureDate
+      outboundCarrierName
+      returnDate
+      inboundCarrierName
+      id
+      cityName
+      outboundOrigin
+      outboundDestination
+      inboundOrigin
+      inboundDestination
+    }
+  }
+`;
+
+const GET_CHEAPEST_ONE_WAY_WITH_DEST = gql`
+  query querygetFlightsWithDestOneWay(
+    $startingAirport: String!
+    $endingAirport: String!
+    $outboundDate: String!
+  ) {
+    getFlightsWithDestOneWay(
+      startingAirport: $startingAirport
+      endingAirport: $endingAirport
+      outboundDate: $outboundDate
     ) {
       price
       direct
@@ -84,7 +111,8 @@ const GET_ROUND_TRIP_FLIGHT_ANYWHERE = gql`
 `;
 
 export {
-  GET_CHEAP_FLIGHTS,
+  GET_CHEAPEST_ROUNDTRIP_WITH_DEST,
+  GET_CHEAPEST_ONE_WAY_WITH_DEST,
   GET_ONE_WAY_FLIGHT_ANYWHERE,
   GET_ROUND_TRIP_FLIGHT_ANYWHERE,
 };
