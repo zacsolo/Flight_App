@@ -27,7 +27,7 @@ module.exports = {
   Query: {
     //--------------------------------------------------------
     //---FIND ARRAY OF CHEAPEST FLIGHTS FOR GIVEN QUERY----
-    getCheapestFlightsForQuery: async (root, args) => {
+    getFlightsWithDestRoundTrip: async (root, args) => {
       const {
         startingAirport,
         endingAirport,
@@ -220,6 +220,200 @@ module.exports = {
         });
       }
     },
+    //
+    //__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--__--
+    //
+    // getCheapestFlightsForQuery: async (root, args) => {
+    //   const {
+    //     startingAirport,
+    //     endingAirport,
+    //     outboundDate,
+    //     inboundDate,
+    //   } = args;
+
+    //   //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+    //   //__Checking for Errors in Inputs__
+    //   //__If invalid, throw UserInputError__
+    //   const { errors, valid } = flightQueryValidation(
+    //     startingAirport,
+    //     endingAirport,
+    //     outboundDate,
+    //     inboundDate
+    //   );
+
+    //   if (!valid) {
+    //     throw new UserInputError('Errors', { errors });
+    //   }
+    //   //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+
+    //   //--- Dynamic URL based on if there is a return flight date selected
+    //   let url = '';
+    //   if (inboundDate) {
+    //     url = `${COMBINE_QUOTES_URL}/${startingAirport}/${endingAirport}/${outboundDate}/${inboundDate}`;
+    //   } else
+    //     url = `${COMBINE_QUOTES_URL}/${startingAirport}/${endingAirport}/${outboundDate}/`;
+
+    //   //---Request params for Rapid Api
+    //   const { data } = await axios({
+    //     method: 'GET',
+    //     url,
+    //     headers: {
+    //       'content-type': 'application/octet-stream',
+    //       'x-rapidapi-host': process.env.HOST,
+    //       'x-rapidapi-key': process.env.KEY,
+    //       useQueryString: true,
+    //     },
+    //   });
+
+    //   //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+    //   //---Check if any flights were returned---
+    //   if (data.Quotes.length < 1) {
+    //     throw new UserInputError('No flights found', {
+    //       errors: 'No flights found',
+    //     });
+    //   }
+    //   //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+    //   console.log(data.Places);
+    //   console.log(data.Quotes);
+    //   //---Finding the single lowest price flight
+    //   const lowestPriceAvailable = data.Quotes.reduce((acc, currFlight) => {
+    //     if (acc.MinPrice > currFlight.MinPrice) {
+    //       acc = currFlight;
+    //     }
+    //     return acc;
+    //   });
+
+    //   //---Returning all flights that match the lowest price flight
+    //   const cheapFlightsArr = data.Quotes.filter(
+    //     (flight) => flight.MinPrice === lowestPriceAvailable.MinPrice
+    //   );
+
+    //   //--Find the CarrierIds--
+    //   //--Finding the outbound Carrier Id
+    //   const outboundId = cheapFlightsArr.map((flight) => {
+    //     return flight.OutboundLeg.CarrierIds;
+    //   });
+
+    //   //__If there is a return flight
+    //   //__Finding the return flight Carrier Id
+    //   let inboundId = null;
+    //   if (inboundDate) {
+    //     inboundId = cheapFlightsArr.map((flight) => {
+    //       return flight.InboundLeg.CarrierIds;
+    //     });
+    //   }
+    //   //--Returning the corresponding carrier object
+    //   const findCarrierInfoOutbound = outboundId.map((id) => {
+    //     return data.Carriers.filter(
+    //       (flight) => flight.CarrierId === Number(id)
+    //     );
+    //   });
+
+    //   //__If there is a return flight
+    //   //--Returning the corresponding carrier object
+    //   let findCarrierInfoInbound = null;
+    //   if (inboundDate) {
+    //     findCarrierInfoInbound = inboundId.map((id) => {
+    //       return data.Carriers.filter(
+    //         (flight) => flight.CarrierId === Number(id)
+    //       );
+    //     });
+    //   }
+
+    //   //_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-_-
+    //   //FIND THE CORRESPONDING OUTBOUND CARRIER AND NEST IT INTO RETURN OBJ
+    //   //
+    //   const outboundFlightCarrierArr = [];
+
+    //   //--Map over array of flights matching the cheapest one
+    //   //--Filter the array of Carriers--
+    //   cheapFlightsArr.map((flight) => {
+    //     const carrier = findCarrierInfoOutbound.filter(
+    //       (car) => car[0].CarrierId === flight.OutboundLeg.CarrierIds[0]
+    //     );
+    //     if (inboundDate) {
+    //       outboundFlightCarrierArr.push({
+    //         price: flight.MinPrice,
+    //         direct: flight.Direct,
+    //         departureDate: flight.OutboundLeg.DepartureDate,
+    //         outboundOrigin: flight.OutboundLeg.OriginId,
+    //         outboundDestination: flight.OutboundLeg.DestinationId,
+    //         returnDate: flight.InboundLeg.DepartureDate,
+    //         inboundOrigin: flight.InboundLeg.OriginId,
+    //         inboundDestination: flight.InboundLeg.DestinationId,
+    //         returnFlightId: flight.InboundLeg.CarrierIds[0],
+    //         outboundCarrierName: carrier[0][0].Name,
+    //       });
+    //     } else {
+    //       outboundFlightCarrierArr.push({
+    //         price: flight.MinPrice,
+    //         direct: flight.Direct,
+    //         departureDate: flight.OutboundLeg.DepartureDate,
+    //         outboundOrigin: flight.OutboundLeg.OriginId,
+    //         outboundDestination: flight.OutboundLeg.DestinationId,
+    //         outboundCarrierName: carrier[0][0].Name,
+    //       });
+    //     }
+    //   });
+
+    //FIND THE CORRESPONDING INBOUND CARRIER AND NEST IT INTO RETURN OBJ
+    //   //
+    //   const inboundFlightCarrierArr = [];
+    //   if (inboundDate) {
+    //     outboundFlightCarrierArr.map((flight) => {
+    //       const carrier = findCarrierInfoInbound.filter(
+    //         (car) => car[0].CarrierId === flight.returnFlightId
+    //       );
+    //       return inboundFlightCarrierArr.push({
+    //         ...flight,
+    //         inboundCarrierName: carrier[0][0].Name,
+    //       });
+    //     });
+    //   }
+
+    //   if (!inboundDate) {
+    //     outboundFlightCarrierArr.map((flight) => {
+    //       const outboundOr = data.Places.filter(
+    //         (place) => place.PlaceId === flight.outboundOrigin
+    //       );
+    //       const outboundDest = data.Places.filter(
+    //         (place) => place.PlaceId === flight.outboundDestination
+    //       );
+    //       return {
+    //         ...flight,
+    //         id: uuidv4(),
+    //         cityName: outboundDest[0].CityName,
+    //         outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
+    //         outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
+    //       };
+    //     });
+    //   } else {
+    //     return inboundFlightCarrierArr.map((flight) => {
+    //       const outboundOr = data.Places.filter(
+    //         (place) => place.PlaceId === flight.outboundOrigin
+    //       );
+    //       const outboundDest = data.Places.filter(
+    //         (place) => place.PlaceId === flight.outboundDestination
+    //       );
+    //       const inboundOr = data.Places.filter(
+    //         (place) => place.PlaceId === flight.inboundOrigin
+    //       );
+    //       const inboundDest = data.Places.filter(
+    //         (place) => place.PlaceId === flight.inboundDestination
+    //       );
+    //       return {
+    //         ...flight,
+    //         id: uuidv4(),
+    //         cityName: outboundDest[0].CityName,
+    //         outboundOrigin: `${outboundOr[0].Name}, ${outboundOr[0].IataCode}`,
+    //         outboundDestination: `${outboundDest[0].Name}, ${outboundDest[0].IataCode}`,
+    //         inboundOrigin: `${inboundOr[0].Name}, ${inboundOr[0].IataCode}`,
+    //         inboundDestination: `${inboundDest[0].Name}, ${inboundDest[0].IataCode}`,
+    //       };
+    //     });
+    //   }
+    // },
+    //
     //------------------//------------------//------------------//------------------//------------------
     //---ONE WAY TO ANYWHERE
     //---from a chosen airport to ANYWHERE

@@ -1,13 +1,13 @@
 import { gql } from '@apollo/client';
 
 const GET_CHEAP_FLIGHTS = gql`
-  query getCheapestFlightsForQuery(
+  query getFlightsWithDestRoundTrip(
     $startingAirport: String!
     $endingAirport: String!
     $outboundDate: String!
     $inboundDate: String
   ) {
-    getCheapestFlightsForQuery(
+    getFlightsWithDestRoundTrip(
       startingAirport: $startingAirport
       endingAirport: $endingAirport
       outboundDate: $outboundDate

@@ -69,6 +69,7 @@ export default function FlightDisplayCard({
               </Button>
             </CardContent>
           </CardContent>
+
           {/* PRICE CARD END */}
           <CardContent style={{ width: '100%', padding: '0' }}>
             <CardContent
@@ -77,6 +78,7 @@ export default function FlightDisplayCard({
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
+                paddingBottom: 0,
               }}>
               <CardContent align='left' style={{ padding: 0 }}>
                 <Typography variant='subtitle2' color='textSecondary'>
@@ -106,14 +108,15 @@ export default function FlightDisplayCard({
                 </Typography>
               </CardContent>
             </CardContent>
-            <hr />
+
             <CardContent
               style={{
                 display: 'flex',
                 flexDirection: 'row',
                 justifyContent: 'space-between',
                 alignItems: 'center',
-                padding: 16,
+                paddingBottom: 16,
+                paddingTop: 0,
               }}>
               <CardContent align='left' style={{ padding: 0 }}>
                 <Typography variant='subtitle2' color='textSecondary'>
@@ -184,6 +187,7 @@ export default function FlightDisplayCard({
               </Button>
             </CardContent>
           </CardContent>
+
           {/* PRICE CARD END */}
           <CardContent style={{ width: '100%', padding: '0' }}>
             <CardContent

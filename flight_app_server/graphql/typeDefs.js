@@ -2,7 +2,7 @@ const { gql } = require('apollo-server');
 
 const typeDefs = gql`
   type Query {
-    getCheapestFlightsForQuery(
+    getFlightsWithDestRoundTrip(
       startingAirport: String!
       endingAirport: String!
       outboundDate: String!
