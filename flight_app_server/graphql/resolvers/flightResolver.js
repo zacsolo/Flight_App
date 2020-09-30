@@ -240,7 +240,7 @@ module.exports = {
         searchDate,
         amountOfResults
       );
-
+      console.log(errors);
       if (!valid) {
         throw new UserInputError('Errors', { errors });
       }

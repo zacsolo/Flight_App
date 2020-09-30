@@ -88,8 +88,8 @@ export default function FlightForm({
 
     searchForFlights(value);
   };
-  console.log('Current State', value);
-  console.log('ARE DATES DISABLED', disableDates);
+  // console.log('Current State', value);
+  // console.log('ARE DATES DISABLED', disableDates);
   return (
     <>
       {noDestinationPicker ? (
