@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import {
   GET_ONE_WAY_FLIGHT_ANYWHERE,
@@ -9,8 +9,6 @@ import { useLazyQuery } from '@apollo/client';
 import FlightForm from '../components/FlightForm';
 import FlightDisplayCard from '../components/FlightDisplayCard';
 import SearchDrawer from '../components/SearchDrawer';
-import { TripOrigin } from '@material-ui/icons';
-import validateFlightAnywhere from '../utils/validFlight';
 
 export default function AnywhereFlight() {
   const [oneWayOptions, setOneWayOptions] = useState([]);

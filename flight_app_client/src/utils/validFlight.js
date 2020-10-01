@@ -46,7 +46,15 @@ export const validateFlightWithDest = (
     errors.outbound = true;
   }
   if (!inbound || inbound.trim() === '') {
-    errors.inbound = true;
+    if (!oneWay) {
+      errors.inbound = true;
+    }
+  }
+  if (inbound.length > 1 && outbound.length > 1) {
+    if (moment(outbound).isAfter(inbound)) {
+      errors.outbound = true;
+      errors.inbound = true;
+    }
   }
 
   return {
