@@ -43,7 +43,12 @@ export default function TemporaryDrawer(props) {
       //   onClick={toggleDrawer(anchor, false)}
       //   onKeyDown={toggleDrawer(anchor, false)}
     >
-      <div style={{ display: 'flex', justifyContent: 'space-around' }}>
+      <div
+        style={{
+          display: 'flex',
+          justifyContent: 'space-around',
+          padding: '16px 0px 0px 16px',
+        }}>
         {React.cloneElement(props.children, { toggleOpen: toggleOpen })}
       </div>
     </div>

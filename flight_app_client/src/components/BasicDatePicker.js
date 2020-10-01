@@ -25,6 +25,7 @@ function BasicDatePicker(props) {
     <DatePicker
       disabled={props.disableForOneWay || (props.disableDates && true)}
       autoOk
+      error={props.error && anytimeName.toLowerCase() !== 'anytime'}
       disablePast
       variant='inline'
       openTo='year'

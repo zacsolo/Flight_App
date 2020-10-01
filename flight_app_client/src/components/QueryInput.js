@@ -5,7 +5,7 @@ import CircularProgress from '@material-ui/core/CircularProgress';
 import useDebounced from '../hooks/useDebounced';
 import { gql, useLazyQuery } from '@apollo/client';
 
-export default function QueryInput({ updateState, name, toAnywhere }) {
+export default function QueryInput({ updateState, name, toAnywhere, error }) {
   //__GRAPH QL__
   //GraphQL query, sending the debounced search value as params
   const [findAirport, { loading, data }] = useLazyQuery(GET_AIRPORTS);
@@ -177,6 +177,7 @@ export default function QueryInput({ updateState, name, toAnywhere }) {
                 ? 'From where?'
                 : 'To where?'
             }
+            error={error}
             variant='standard'
             InputProps={{
               ...params.InputProps,

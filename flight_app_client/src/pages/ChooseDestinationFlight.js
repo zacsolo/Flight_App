@@ -40,7 +40,6 @@ export default function ChooseDestinationFlight() {
   // };
 
   const searchForFlights = (flightQuery) => {
-    console.log(flightQuery);
     setInitialSearch(false);
     setOneWayOptions([]);
     setRoundTripOptions([]);

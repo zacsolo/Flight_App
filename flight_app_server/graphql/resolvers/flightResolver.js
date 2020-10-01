@@ -44,6 +44,7 @@ module.exports = {
       );
 
       if (!valid) {
+        console.log(errors);
         throw new UserInputError('Errors', { errors });
       }
 

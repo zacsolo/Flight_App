@@ -9,6 +9,8 @@ import { useLazyQuery } from '@apollo/client';
 import FlightForm from '../components/FlightForm';
 import FlightDisplayCard from '../components/FlightDisplayCard';
 import SearchDrawer from '../components/SearchDrawer';
+import { TripOrigin } from '@material-ui/icons';
+import validateFlightAnywhere from '../utils/validFlight';
 
 export default function AnywhereFlight() {
   const [oneWayOptions, setOneWayOptions] = useState([]);
@@ -30,48 +32,52 @@ export default function AnywhereFlight() {
     onCompleted: (data) => setRoundTripOptions(data.roundTripFlightToAnywhere),
   });
 
-  const searchForFlights = (flightQuery) => {
+  const searchForFlights = ({
+    inboundDate,
+    startingAirport,
+    outboundDate,
+    oneWay,
+  }) => {
     setInitialSearch(false);
     setOneWayOptions([]);
     setRoundTripOptions([]);
-    if (flightQuery.inboundDate) {
+    if (inboundDate) {
       roundTripToAnywhereQuery({
         variables: {
-          startingAirport: flightQuery.startingAirport,
-          outboundDate: flightQuery.outboundDate,
-          inboundDate: flightQuery.inboundDate,
+          startingAirport: startingAirport,
+          outboundDate: outboundDate,
+          inboundDate: inboundDate,
         },
       });
     } else {
       oneWayToAnywhereQuery({
         variables: {
-          startingAirport: flightQuery.startingAirport,
-          searchDate: flightQuery.outboundDate,
+          startingAirport: startingAirport,
+          searchDate: outboundDate,
           amountOfResults: 50,
         },
       });
     }
   };
 
-  if (!loading) {
-    console.log('ONE WAY DATA RETURNED', data);
+  if (error) {
+    console.log(error);
   }
-  if (!roundTripLoading) {
-    console.log('ROUND TRIP DATA RETURNED', roundTripData);
+  if (roundTripError) {
+    console.log(roundTripError);
   }
-
   return (
     <div className='App'>
       {initialSearch ? (
         <FlightForm
-          error={error}
+          error={error ? error : roundTripError ? roundTripError : null}
           searchForFlights={searchForFlights}
           noDestinationPicker={true}
         />
       ) : (
         <SearchDrawer>
           <FlightForm
-            error={error}
+            error={error ? error : roundTripError ? roundTripError : null}
             searchForFlights={searchForFlights}
             noDestinationPicker={true}
           />
@@ -83,7 +89,6 @@ export default function AnywhereFlight() {
           {oneWayOptions.map((f) => (
             <FlightDisplayCard key={f.id} flight={{ ...f }} />
           ))}
-          {error && console.log(error)}
         </div>
       )}
       {roundTripData && !roundTripLoading && (
@@ -91,7 +96,6 @@ export default function AnywhereFlight() {
           {roundTripOptions.map((f) => (
             <FlightDisplayCard key={f.id} flight={{ ...f }} />
           ))}
-          {roundTripError && console.log(roundTripError)}
         </div>
       )}
     </div>
