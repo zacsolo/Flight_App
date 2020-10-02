@@ -10,7 +10,6 @@ export default function Home() {
 
   return (
     <>
-      <NavBar />
       <div className='App'>
         {adventureMode ? <AnywhereFlight /> : <ChooseDestinationFlight />}
       </div>

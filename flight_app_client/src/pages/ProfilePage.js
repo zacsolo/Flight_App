@@ -1,10 +1,8 @@
 import React from 'react';
-import NavBar from '../components/NavBar';
 
 export default function ProfilePage() {
   return (
     <div>
-      <NavBar />
       <div style={{ marginTop: '80px' }}>
         <ul>
           <h3>Welcome to your stash!</h3>

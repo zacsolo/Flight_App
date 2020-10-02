@@ -9,6 +9,8 @@ import SearchIcon from '@material-ui/icons/Search';
 import { Checkbox } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { GlobalSearchStateContext } from '../utils/context';
+import { Link } from 'react-router-dom';
+import { useLocation } from 'react-router-dom';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -22,7 +24,9 @@ const useStyles = makeStyles((theme) => ({
   },
 }));
 
-export default function Home() {
+export default function NavBar() {
+  const { pathname } = useLocation();
+  console.log(pathname);
   const classes = useStyles();
   const {
     adventureMode,
@@ -41,17 +45,28 @@ export default function Home() {
       <AppBar position='fixed' color={adventureMode ? 'secondary' : 'primary'}>
         <Toolbar>
           <Typography variant='h6' className={classes.title}>
-            <FormControlLabel
-              control={
-                <Checkbox
-                  checked={adventureMode}
-                  onChange={restartSearch}
-                  name='simpleSearch'
-                  color='grey'
-                />
-              }
-              label='Adventure Mode'
-            />
+            {pathname !== '/search' ? (
+              <IconButton
+                edge='end'
+                color='inherit'
+                className={classes.menuButton}
+                component={Link}
+                to='/search'>
+                <SearchIcon />
+              </IconButton>
+            ) : (
+              <FormControlLabel
+                control={
+                  <Checkbox
+                    checked={adventureMode}
+                    onChange={restartSearch}
+                    name='simpleSearch'
+                    color='default'
+                  />
+                }
+                label='Adventure Mode'
+              />
+            )}
           </Typography>
           {!firstSearch && (
             <IconButton
@@ -62,7 +77,12 @@ export default function Home() {
               <SearchIcon />
             </IconButton>
           )}
-          <Button color='inherit'>Login</Button>
+          <Button component={Link} to='/login' color='inherit'>
+            Login
+          </Button>
+          <Button component={Link} to='/signup' color='inherit'>
+            Signup
+          </Button>
         </Toolbar>
       </AppBar>
     </div>
