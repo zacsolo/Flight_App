@@ -1,17 +1,21 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
 import {
   GET_CHEAPEST_ROUNDTRIP_WITH_DEST,
   GET_CHEAPEST_ONE_WAY_WITH_DEST,
 } from '../gql/FlightQueries';
 import { useLazyQuery } from '@apollo/client';
+import { GlobalSearchStateContext } from '../utils/context';
 
 import FlightForm from '../components/FlightForm';
 import FlightDisplayCard from '../components/FlightDisplayCard';
 import SearchDrawer from '../components/SearchDrawer';
 
 export default function ChooseDestinationFlight() {
+  const { searchDrawerOpen, firstSearch, setFirstSearch } = useContext(
+    GlobalSearchStateContext
+  );
   const [oneWayOptions, setOneWayOptions] = useState([]);
-  const [initialSearch, setInitialSearch] = useState(true);
+
   const [roundTripOptions, setRoundTripOptions] = useState([]);
 
   const [getRoundTripFlights, { data, loading, error }] = useLazyQuery(
@@ -30,17 +34,8 @@ export default function ChooseDestinationFlight() {
     onCompleted: (data) => setOneWayOptions(data.getFlightsWithDestOneWay),
   });
 
-  // const searchForFlights = (flightQuery) => {
-  //   console.log('QUERY', flightQuery);
-  //   getFlights({
-  //     variables: {
-  //       ...flightQuery,
-  //     },
-  //   });
-  // };
-
   const searchForFlights = (flightQuery) => {
-    setInitialSearch(false);
+    setFirstSearch(false);
     setOneWayOptions([]);
     setRoundTripOptions([]);
     if (flightQuery.inboundDate !== '') {
@@ -65,13 +60,14 @@ export default function ChooseDestinationFlight() {
 
   return (
     <div className='App'>
-      {initialSearch ? (
+      {firstSearch && (
         <FlightForm error={error} searchForFlights={searchForFlights} />
-      ) : (
+      )}
+      {!firstSearch && searchDrawerOpen ? (
         <SearchDrawer>
           <FlightForm error={error} searchForFlights={searchForFlights} />
         </SearchDrawer>
-      )}
+      ) : null}
       {data && !loading && (
         <div>
           {roundTripOptions.map((f) => (

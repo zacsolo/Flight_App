@@ -1,8 +1,9 @@
-import React from 'react';
+import React, { useEffect, useContext } from 'react';
 import clsx from 'clsx';
 import { makeStyles } from '@material-ui/core/styles';
 import Drawer from '@material-ui/core/Drawer';
 import Button from '@material-ui/core/Button';
+import { GlobalSearchStateContext } from '../utils/context';
 
 const useStyles = makeStyles({
   list: {
@@ -14,9 +15,10 @@ const useStyles = makeStyles({
 });
 
 export default function TemporaryDrawer(props) {
+  const { setSearchDrawerOpen } = useContext(GlobalSearchStateContext);
   const classes = useStyles();
   const [state, setState] = React.useState({
-    top: false,
+    top: true,
   });
 
   const toggleDrawer = (anchor, open) => (event) => {
@@ -26,11 +28,12 @@ export default function TemporaryDrawer(props) {
     ) {
       return;
     }
-
+    setSearchDrawerOpen(open);
     setState({ ...state, [anchor]: open });
   };
 
   const toggleOpen = () => {
+    setSearchDrawerOpen(state.top);
     setState({ ...state, top: !state.top });
   };
 
@@ -39,10 +42,7 @@ export default function TemporaryDrawer(props) {
       className={clsx(classes.list, {
         [classes.fullList]: anchor === 'top' || anchor === 'bottom',
       })}
-      role='presentation'
-      //   onClick={toggleDrawer(anchor, false)}
-      //   onKeyDown={toggleDrawer(anchor, false)}
-    >
+      role='presentation'>
       <div
         style={{
           display: 'flex',
@@ -58,7 +58,6 @@ export default function TemporaryDrawer(props) {
     <div>
       {['top'].map((anchor) => (
         <React.Fragment key={anchor}>
-          <Button onClick={toggleDrawer(anchor, true)}>Search</Button>
           <Drawer
             anchor={anchor}
             open={state[anchor]}

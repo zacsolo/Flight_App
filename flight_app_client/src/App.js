@@ -1,30 +1,13 @@
-import React, { useState } from 'react';
-import AnywhereFlight from './pages/AnywhereFlight';
-import { BrowserRouter, Route } from 'react-router-dom';
-
+import React from 'react';
+import GlobalSearchStateContextProvider from './utils/context';
 import './App.css';
-
-import ChooseDestinationFlight from './pages/ChooseDestinationFlight';
-import { Checkbox } from '@material-ui/core';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
+import Home from './pages/Home';
 
 function App() {
-  const [simple, setSimple] = useState(false);
   return (
-    <div className='App'>
-      <FormControlLabel
-        control={
-          <Checkbox
-            checked={simple}
-            onChange={() => setSimple(!simple)}
-            name='simpleSearch'
-            color='primary'
-          />
-        }
-        label='Adventure Mode'
-      />
-      {simple ? <AnywhereFlight /> : <ChooseDestinationFlight />}
-    </div>
+    <GlobalSearchStateContextProvider>
+      <Home />
+    </GlobalSearchStateContextProvider>
   );
 }
 

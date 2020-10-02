@@ -1,4 +1,5 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { GlobalSearchStateContext } from '../utils/context';
 
 import {
   GET_ONE_WAY_FLIGHT_ANYWHERE,
@@ -11,8 +12,11 @@ import FlightDisplayCard from '../components/FlightDisplayCard';
 import SearchDrawer from '../components/SearchDrawer';
 
 export default function AnywhereFlight() {
+  const { searchDrawerOpen, firstSearch, setFirstSearch } = useContext(
+    GlobalSearchStateContext
+  );
+  console.log(searchDrawerOpen);
   const [oneWayOptions, setOneWayOptions] = useState([]);
-  const [initialSearch, setInitialSearch] = useState(true);
   const [roundTripOptions, setRoundTripOptions] = useState([]);
 
   const [oneWayToAnywhereQuery, { data, loading, error }] = useLazyQuery(
@@ -36,7 +40,7 @@ export default function AnywhereFlight() {
     outboundDate,
     oneWay,
   }) => {
-    setInitialSearch(false);
+    setFirstSearch(false);
     setOneWayOptions([]);
     setRoundTripOptions([]);
     if (inboundDate) {
@@ -66,13 +70,14 @@ export default function AnywhereFlight() {
   }
   return (
     <div className='App'>
-      {initialSearch ? (
+      {firstSearch && (
         <FlightForm
           error={error ? error : roundTripError ? roundTripError : null}
           searchForFlights={searchForFlights}
           noDestinationPicker={true}
         />
-      ) : (
+      )}
+      {!firstSearch && searchDrawerOpen ? (
         <SearchDrawer>
           <FlightForm
             error={error ? error : roundTripError ? roundTripError : null}
@@ -80,8 +85,7 @@ export default function AnywhereFlight() {
             noDestinationPicker={true}
           />
         </SearchDrawer>
-      )}
-
+      ) : null}
       {data && !loading && (
         <div>
           {oneWayOptions.map((f) => (
