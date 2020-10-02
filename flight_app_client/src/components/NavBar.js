@@ -9,7 +9,6 @@ import SearchIcon from '@material-ui/icons/Search';
 import { Checkbox } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { GlobalSearchStateContext } from '../utils/context';
-import { first } from 'lodash';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -39,7 +38,7 @@ export default function Home() {
   };
   return (
     <div className={classes.root}>
-      <AppBar position='fixed'>
+      <AppBar position='fixed' color={adventureMode ? 'secondary' : 'primary'}>
         <Toolbar>
           <Typography variant='h6' className={classes.title}>
             <FormControlLabel
@@ -48,7 +47,7 @@ export default function Home() {
                   checked={adventureMode}
                   onChange={restartSearch}
                   name='simpleSearch'
-                  color='primary'
+                  color='grey'
                 />
               }
               label='Adventure Mode'
