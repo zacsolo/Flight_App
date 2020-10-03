@@ -6,11 +6,13 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
+import { Switch } from '@material-ui/core';
 import { Checkbox } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { GlobalSearchStateContext } from '../utils/context';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -34,6 +36,7 @@ export default function NavBar() {
     setAdventureMode,
     setSearchDrawerOpen,
     setFirstSearch,
+    isLoggedIn,
   } = useContext(GlobalSearchStateContext);
 
   const restartSearch = () => {
@@ -57,7 +60,7 @@ export default function NavBar() {
             ) : (
               <FormControlLabel
                 control={
-                  <Checkbox
+                  <Switch
                     checked={adventureMode}
                     onChange={restartSearch}
                     name='simpleSearch'
@@ -77,12 +80,20 @@ export default function NavBar() {
               <SearchIcon />
             </IconButton>
           )}
-          <Button component={Link} to='/login' color='inherit'>
-            Login
-          </Button>
-          <Button component={Link} to='/signup' color='inherit'>
-            Signup
-          </Button>
+          {isLoggedIn ? (
+            <IconButton edge='end' color='inherit'>
+              <AccountCircleIcon />
+            </IconButton>
+          ) : (
+            <>
+              <Button component={Link} to='/login' color='inherit'>
+                Login
+              </Button>
+              <Button component={Link} to='/signup' color='inherit'>
+                Signup
+              </Button>
+            </>
+          )}
         </Toolbar>
       </AppBar>
     </div>
