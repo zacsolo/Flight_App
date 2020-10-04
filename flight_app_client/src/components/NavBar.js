@@ -81,7 +81,7 @@ export default function NavBar() {
             </IconButton>
           )}
           {isLoggedIn ? (
-            <IconButton edge='end' color='inherit'>
+            <IconButton edge='end' color='inherit' component={Link} to='/user'>
               <AccountCircleIcon />
             </IconButton>
           ) : (

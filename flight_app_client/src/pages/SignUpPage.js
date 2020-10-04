@@ -45,7 +45,9 @@ export default function SignUpPage() {
       setErrors(errors);
     }
   };
-  console.log(data);
+  if (data) {
+    localStorage.setItem('userToken', data.signup.token);
+  }
 
   return (
     <>

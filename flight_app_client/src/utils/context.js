@@ -6,7 +6,9 @@ const GlobalSearchStateContextProvider = (props) => {
   const [adventureMode, setAdventureMode] = useState(false);
   const [searchDrawerOpen, setSearchDrawerOpen] = useState(false);
   const [firstSearch, setFirstSearch] = useState(true);
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(
+    localStorage.getItem('userToken')
+  );
 
   const value = useMemo(
     () => ({
