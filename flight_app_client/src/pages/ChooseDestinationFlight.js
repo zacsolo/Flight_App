@@ -15,7 +15,6 @@ export default function ChooseDestinationFlight() {
     GlobalSearchStateContext
   );
   const [oneWayOptions, setOneWayOptions] = useState([]);
-
   const [roundTripOptions, setRoundTripOptions] = useState([]);
 
   const [getRoundTripFlights, { data, loading, error }] = useLazyQuery(
@@ -33,7 +32,7 @@ export default function ChooseDestinationFlight() {
     fetchPolicy: 'no-cache',
     onCompleted: (data) => setOneWayOptions(data.getFlightsWithDestOneWay),
   });
-
+  console.log(firstSearch);
   const searchForFlights = (flightQuery) => {
     setFirstSearch(false);
     setOneWayOptions([]);

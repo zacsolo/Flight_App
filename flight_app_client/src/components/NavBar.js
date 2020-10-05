@@ -43,6 +43,7 @@ export default function NavBar() {
     setFirstSearch(true);
     setAdventureMode(!adventureMode);
   };
+
   return (
     <div className={classes.root}>
       <AppBar position='fixed' color={adventureMode ? 'secondary' : 'primary'}>
@@ -54,6 +55,7 @@ export default function NavBar() {
                 color='inherit'
                 className={classes.menuButton}
                 component={Link}
+                onClick={() => setFirstSearch(true)}
                 to='/search'>
                 <SearchIcon />
               </IconButton>
@@ -71,7 +73,7 @@ export default function NavBar() {
               />
             )}
           </Typography>
-          {!firstSearch && (
+          {!firstSearch && pathname === '/search' ? (
             <IconButton
               edge='end'
               color='inherit'
@@ -79,7 +81,7 @@ export default function NavBar() {
               onClick={() => setSearchDrawerOpen(true)}>
               <SearchIcon />
             </IconButton>
-          )}
+          ) : null}
           {isLoggedIn ? (
             <IconButton edge='end' color='inherit' component={Link} to='/user'>
               <AccountCircleIcon />
