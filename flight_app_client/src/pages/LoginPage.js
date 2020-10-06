@@ -35,7 +35,9 @@ export default function LoginPage() {
     const { email, password } = formState;
     const { errors, valid } = validateUserLogin(email, password);
     if (valid) {
-      login({ variables: { email, password } });
+      login({ variables: { email, password } }).catch((err) => {
+        setErrors({ ...errors, graphQL: err.graphQLErrors[0] });
+      });
     } else {
       setErrors(errors);
     }
@@ -60,7 +62,7 @@ export default function LoginPage() {
             paddingTop: '80px',
           }}>
           <TextField
-            error={errors.email && true}
+            error={errors.email || errors.graphQL ? true : false}
             helperText={errors.email && `${errors.email}`}
             id='standard-basic'
             label='email'
@@ -69,8 +71,14 @@ export default function LoginPage() {
             onChange={(e) => handleChange(e)}
           />
           <TextField
-            error={errors.password && true}
-            helperText={errors.password && `${errors.password}`}
+            error={errors.password || errors.graphQL ? true : false}
+            helperText={
+              errors.password
+                ? `${errors.password}`
+                : errors.graphQL
+                ? 'Incorrect username or password.'
+                : null
+            }
             id='standard-basic'
             label='password'
             name='password'
@@ -112,7 +120,6 @@ export default function LoginPage() {
           <Button color='primary' type='submit'>
             Login
           </Button>
-          {loading && <CheckIcon />}
         </form>
       )}
     </>
