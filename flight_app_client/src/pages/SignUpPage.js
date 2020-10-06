@@ -5,9 +5,10 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { validateUserSignUp } from '../utils/validUser';
 import { SIGN_UP } from '../gql/UserMutations';
+import { FormControl, FormGroup, FormHelperText } from '@material-ui/core';
 
 export default function SignUpPage() {
-  const [signup, { data }] = useMutation(SIGN_UP);
+  const [signup, { data, error }] = useMutation(SIGN_UP);
   const [formState, setFormState] = useState({
     firstName: '',
     lastName: '',
@@ -26,8 +27,7 @@ export default function SignUpPage() {
   //to help validate. Will be getting some info from the back end, would be ideal
   //to incorperate that into the helperText for each input
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
+  const handleSubmit = () => {
     const { firstName, lastName, email, password, confirmPassword } = formState;
     const { errors, valid } = validateUserSignUp(
       firstName,
@@ -36,13 +36,15 @@ export default function SignUpPage() {
       password,
       confirmPassword
     );
+    console.log({ firstName, lastName, email, password, confirmPassword });
     if (valid) {
+      console.log({ firstName, lastName, email, password, confirmPassword });
       signup({
         variables: { firstName, lastName, email, password, confirmPassword },
-      });
-      console.log(formState);
+      }).catch((error) => setErrors({ ...errors, graphQL: error }));
     } else {
       setErrors(errors);
+      console.log({ firstName, lastName, email, password, confirmPassword });
     }
   };
   if (data) {
@@ -52,8 +54,8 @@ export default function SignUpPage() {
   return (
     <>
       {errors ? (
-        <form
-          onSubmit={handleSubmit}
+        <FormControl
+          error={errors}
           autoComplete='off'
           style={{
             display: 'flex',
@@ -109,13 +111,15 @@ export default function SignUpPage() {
             value={formState.confirmPassword}
             onChange={(e) => handleChange(e)}
           />
-          <Button color='primary' type='submit'>
-            Login
+          <FormHelperText>
+            {errors.graphQL ? 'Email already taken' : null}
+          </FormHelperText>
+          <Button color='primary' onClick={handleSubmit}>
+            Sign Up
           </Button>
-        </form>
+        </FormControl>
       ) : (
-        <form
-          onSubmit={handleSubmit}
+        <FormControl
           autoComplete='off'
           style={{
             display: 'flex',
@@ -149,8 +153,8 @@ export default function SignUpPage() {
             id='standard-basic'
             label='password'
             name='password'
-            value={formState.password}
             type='password'
+            value={formState.password}
             onChange={(e) => handleChange(e)}
           />
           <TextField
@@ -161,10 +165,10 @@ export default function SignUpPage() {
             value={formState.confirmPassword}
             onChange={(e) => handleChange(e)}
           />
-          <Button color='primary' type='submit'>
-            Login
+          <Button color='primary' onClick={handleSubmit}>
+            Sign Up
           </Button>
-        </form>
+        </FormControl>
       )}
     </>
   );
