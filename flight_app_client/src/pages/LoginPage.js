@@ -17,10 +17,13 @@ export default function LoginPage() {
     password: '',
   });
   const [errors, setErrors] = useState();
-  const { isLoggedIn, setIsLoggedIn } = useContext(GlobalSearchStateContext);
+  const { isLoggedIn, setIsLoggedIn, setFirstSearch } = useContext(
+    GlobalSearchStateContext
+  );
 
   useEffect(() => {
     if (data || isLoggedIn) {
+      setFirstSearch(true);
       setIsLoggedIn(true);
       history.push('/user');
     }

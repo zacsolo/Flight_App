@@ -15,8 +15,7 @@ export default function AnywhereFlight() {
   const { searchDrawerOpen, firstSearch, setFirstSearch } = useContext(
     GlobalSearchStateContext
   );
-  console.log(searchDrawerOpen);
-  console.log(firstSearch);
+
   const [oneWayOptions, setOneWayOptions] = useState([]);
   const [roundTripOptions, setRoundTripOptions] = useState([]);
 

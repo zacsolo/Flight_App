@@ -1,14 +1,19 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import { useMutation } from '@apollo/client';
+import { useHistory } from 'react-router-dom';
 
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { validateUserSignUp } from '../utils/validUser';
 import { SIGN_UP } from '../gql/UserMutations';
-import { FormControl, FormGroup, FormHelperText } from '@material-ui/core';
+import { FormHelperText } from '@material-ui/core';
+import { GlobalSearchStateContext } from '../utils/context';
 
 export default function SignUpPage() {
-  const [signup, { data, error }] = useMutation(SIGN_UP);
+  const { isLoggedIn, setIsLoggedIn, setFirstSearch } = useContext(
+    GlobalSearchStateContext
+  );
+  const [signup, { data }] = useMutation(SIGN_UP);
   const [formState, setFormState] = useState({
     firstName: '',
     lastName: '',
@@ -17,6 +22,14 @@ export default function SignUpPage() {
     confirmPassword: '',
   });
   const [errors, setErrors] = useState();
+  const history = useHistory();
+  useEffect(() => {
+    if (data || isLoggedIn) {
+      setFirstSearch(true);
+      setIsLoggedIn(true);
+      history.push('/user');
+    }
+  }, [data]);
 
   const handleChange = (e) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
@@ -27,7 +40,8 @@ export default function SignUpPage() {
   //to help validate. Will be getting some info from the back end, would be ideal
   //to incorperate that into the helperText for each input
 
-  const handleSubmit = () => {
+  const handleSubmit = (e) => {
+    e.preventDefault();
     const { firstName, lastName, email, password, confirmPassword } = formState;
     const { errors, valid } = validateUserSignUp(
       firstName,
@@ -36,7 +50,7 @@ export default function SignUpPage() {
       password,
       confirmPassword
     );
-    console.log({ firstName, lastName, email, password, confirmPassword });
+
     if (valid) {
       console.log({ firstName, lastName, email, password, confirmPassword });
       signup({
@@ -54,8 +68,8 @@ export default function SignUpPage() {
   return (
     <>
       {errors ? (
-        <FormControl
-          error={errors}
+        <form
+          onSubmit={handleSubmit}
           autoComplete='off'
           style={{
             display: 'flex',
@@ -83,7 +97,7 @@ export default function SignUpPage() {
             onChange={(e) => handleChange(e)}
           />
           <TextField
-            error={errors.email && true}
+            error={errors.email || errors.graphQL ? true : false}
             helperText={errors.email && `${errors.email}`}
             id='standard-basic'
             label='email'
@@ -111,15 +125,16 @@ export default function SignUpPage() {
             value={formState.confirmPassword}
             onChange={(e) => handleChange(e)}
           />
-          <FormHelperText>
+          <FormHelperText error>
             {errors.graphQL ? 'Email already taken' : null}
           </FormHelperText>
-          <Button color='primary' onClick={handleSubmit}>
+          <Button color='primary' type='submit'>
             Sign Up
           </Button>
-        </FormControl>
+        </form>
       ) : (
-        <FormControl
+        <form
+          onSubmit={handleSubmit}
           autoComplete='off'
           style={{
             display: 'flex',
@@ -165,10 +180,10 @@ export default function SignUpPage() {
             value={formState.confirmPassword}
             onChange={(e) => handleChange(e)}
           />
-          <Button color='primary' onClick={handleSubmit}>
+          <Button color='primary' type='submit'>
             Sign Up
           </Button>
-        </FormControl>
+        </form>
       )}
     </>
   );

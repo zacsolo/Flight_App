@@ -33,7 +33,7 @@ export default function TemporaryDrawer(props) {
   };
 
   const toggleOpen = () => {
-    setSearchDrawerOpen(state.top);
+    setSearchDrawerOpen(false);
     setState({ ...state, top: !state.top });
   };
 

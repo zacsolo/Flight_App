@@ -7,7 +7,6 @@ import Button from '@material-ui/core/Button';
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import { Switch } from '@material-ui/core';
-import { Checkbox } from '@material-ui/core';
 import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { GlobalSearchStateContext } from '../utils/context';
 import { Link } from 'react-router-dom';
@@ -28,13 +27,13 @@ const useStyles = makeStyles((theme) => ({
 
 export default function NavBar() {
   const { pathname } = useLocation();
-  console.log(pathname);
   const classes = useStyles();
   const {
     adventureMode,
     firstSearch,
     setAdventureMode,
     setSearchDrawerOpen,
+    searchDrawerOpen,
     setFirstSearch,
     isLoggedIn,
   } = useContext(GlobalSearchStateContext);
@@ -43,6 +42,13 @@ export default function NavBar() {
     setFirstSearch(true);
     setAdventureMode(!adventureMode);
   };
+  console.log('______START________');
+  console.log('FIRST SEARCH ?', firstSearch);
+
+  console.log('Search Drawer Open', searchDrawerOpen);
+
+  console.log('Logged In?', isLoggedIn);
+  console.log('______END________');
 
   return (
     <div className={classes.root}>

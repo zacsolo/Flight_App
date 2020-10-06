@@ -9,7 +9,6 @@ import { validateFlightWithDest } from '../utils/validFlight';
 import { FormControl } from '@material-ui/core';
 
 export default function FlightForm({
-  error,
   searchForFlights,
   noDestinationPicker,
   toggleOpen,
@@ -49,7 +48,6 @@ export default function FlightForm({
         : setValue({ ...value, outboundDate: '', inboundDate: '' });
       console.log('SET STATE', value);
     } else if (!value.oneWay) {
-      console.log('SENT FROM CHECKBOX', checked);
       setDisableDates(!disableDates);
       checked
         ? setValue({
