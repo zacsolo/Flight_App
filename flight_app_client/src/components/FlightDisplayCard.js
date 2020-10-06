@@ -13,6 +13,7 @@ import FlightTakeoffIcon from '@material-ui/icons/FlightTakeoff';
 import FlightLandIcon from '@material-ui/icons/FlightLand';
 import '../FlightDisplayCard.css';
 import moment from 'moment';
+import SaveFlightButton from './SaveFlightButton';
 
 export default function FlightDisplayCard({
   flight: {
@@ -62,14 +63,14 @@ export default function FlightDisplayCard({
               <Button color='primary' startIcon={<ShoppingCartOutlinedIcon />}>
                 Buy
               </Button>
-              <Button
+              <SaveFlightButton />
+              {/* <Button
                 color='secondary'
                 startIcon={<FavoriteBorderOutlinedIcon />}>
                 Save
-              </Button>
+              </Button> */}
             </CardContent>
           </CardContent>
-
           {/* PRICE CARD END */}
           <CardContent style={{ width: '100%', padding: '0' }}>
             <CardContent
@@ -180,11 +181,12 @@ export default function FlightDisplayCard({
               <Button color='primary' startIcon={<ShoppingCartOutlinedIcon />}>
                 Buy
               </Button>
-              <Button
+              <SaveFlightButton />
+              {/* <Button
                 color='secondary'
                 startIcon={<FavoriteBorderOutlinedIcon />}>
                 Save
-              </Button>
+              </Button> */}
             </CardContent>
           </CardContent>
 
