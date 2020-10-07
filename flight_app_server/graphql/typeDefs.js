@@ -83,12 +83,11 @@ const typeDefs = gql`
       confirmPassword: String!
     ): User
     login(email: String!, password: String!): User
-    saveFlight(
+    saveUserFlight(
       price: Int!
       direct: Boolean!
       departureDate: String!
       outboundCarrierName: String!
-
       cityName: String!
       returnDate: String
       inboundCarrierName: String
@@ -96,6 +95,11 @@ const typeDefs = gql`
       outboundDestination: String!
       inboundOrigin: String
       inboundDestination: String
+    ): User
+    removeUserFlight(
+      departureDate: String!
+      outboundOrigin: String!
+      outboundDestination: String!
     ): User
   }
 `;

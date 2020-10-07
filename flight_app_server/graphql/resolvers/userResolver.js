@@ -95,7 +95,7 @@ module.exports = {
         passwordHash: user.passwordHash,
         id: user._id,
         token,
-        savedFlights: user.savedFlights,
+        savedFlights: [...user.savedFlights],
       };
     },
   },
