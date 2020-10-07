@@ -17,6 +17,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  savedFlights: {
+    type: Array,
+    required: true,
+  },
   createdAt: {
     type: Date,
     required: true,

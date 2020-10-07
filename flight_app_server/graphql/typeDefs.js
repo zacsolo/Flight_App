@@ -33,6 +33,7 @@ const typeDefs = gql`
     email: String!
     passwordHash: String!
     createdAt: String!
+    savedFlights: [Flight]
     token: String!
   }
   type Flight {
@@ -87,7 +88,7 @@ const typeDefs = gql`
       direct: Boolean!
       departureDate: String!
       outboundCarrierName: String!
-      id: String!
+
       cityName: String!
       returnDate: String
       inboundCarrierName: String
@@ -95,7 +96,7 @@ const typeDefs = gql`
       outboundDestination: String!
       inboundOrigin: String
       inboundDestination: String
-    ): [Flight]
+    ): User
   }
 `;
 

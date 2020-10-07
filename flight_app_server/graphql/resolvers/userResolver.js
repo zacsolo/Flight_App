@@ -52,7 +52,7 @@ module.exports = {
       const token = jwt.sign(userForToken, process.env.SECRET, {
         expiresIn: '1h',
       });
-      return { ...savedUser._doc, id: savedUser._id, token };
+      return { ...savedUser._doc, id: savedUser._id, token, savedFlights: [] };
     },
 
     //--- Login for Existing User ---
@@ -95,6 +95,7 @@ module.exports = {
         passwordHash: user.passwordHash,
         id: user._id,
         token,
+        savedFlights: user.savedFlights,
       };
     },
   },
