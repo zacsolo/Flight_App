@@ -639,7 +639,7 @@ module.exports = {
           const inboundDest = data.Places.filter(
             (place) => place.PlaceId === flight.inboundDestination
           );
-          console.log(outboundDest);
+
           return {
             ...flight,
             id: uuidv4(),

@@ -6,12 +6,12 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { validateUserLogin } from '../utils/validUser';
 import { LOGIN_USER } from '../gql/UserMutations';
-import CheckIcon from '@material-ui/icons/Check';
+
 import { GlobalSearchStateContext } from '../utils/context';
 
 export default function LoginPage() {
   const history = useHistory();
-  const [login, { data, loading, error }] = useMutation(LOGIN_USER);
+  const [login, { data }] = useMutation(LOGIN_USER);
   const [formState, setFormState] = useState({
     email: '',
     password: '',
@@ -25,7 +25,7 @@ export default function LoginPage() {
     if (data || isLoggedIn) {
       setFirstSearch(true);
       setIsLoggedIn(true);
-      history.push('/user');
+      history.push('/search');
     }
   }, [data]);
 
@@ -38,9 +38,11 @@ export default function LoginPage() {
     const { email, password } = formState;
     const { errors, valid } = validateUserLogin(email, password);
     if (valid) {
-      login({ variables: { email, password } }).catch((err) => {
-        setErrors({ ...errors, graphQL: err.graphQLErrors[0] });
-      });
+      login({ variables: { email: email.toLowerCase(), password } }).catch(
+        (err) => {
+          setErrors({ ...errors, graphQL: err.graphQLErrors[0] });
+        }
+      );
     } else {
       setErrors(errors);
     }

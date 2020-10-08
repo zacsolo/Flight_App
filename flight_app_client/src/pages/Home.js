@@ -1,5 +1,5 @@
 import React, { useContext } from 'react';
-import NavBar from '../components/NavBar';
+
 import { GlobalSearchStateContext } from '../utils/context';
 
 import AnywhereFlight from './AnywhereFlight';

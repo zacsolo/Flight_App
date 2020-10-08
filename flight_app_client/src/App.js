@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import GlobalSearchStateContextProvider from './utils/context';
 import './App.css';
 import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
@@ -13,6 +12,7 @@ function App() {
   const { isLoggedIn } = useContext(GlobalSearchStateContext);
   console.log('LOCAL STORAGE:', localStorage);
   console.log('LOG IN STATUS:', isLoggedIn);
+
   return (
     <BrowserRouter>
       <NavBar />
@@ -26,6 +26,7 @@ function App() {
         <Route path='/login'>
           {isLoggedIn ? <Redirect to='/search' /> : <LoginPage />}
         </Route>
+
         <Route path='/signup'>
           {isLoggedIn ? <Redirect to='/search' /> : <SignUpPage />}
         </Route>

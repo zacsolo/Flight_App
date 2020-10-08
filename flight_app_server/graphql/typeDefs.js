@@ -25,6 +25,7 @@ const typeDefs = gql`
       inboundDate: String!
       amountOfResults: String
     ): [Flight]
+    getUser: User
   }
   type User {
     id: ID!

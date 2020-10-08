@@ -7,7 +7,6 @@ import Button from '@material-ui/core/Button';
 import Typography from '@material-ui/core/Typography';
 import LinearScaleIcon from '@material-ui/icons/LinearScale';
 import RemoveIcon from '@material-ui/icons/Remove';
-import FavoriteBorderOutlinedIcon from '@material-ui/icons/FavoriteBorderOutlined';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import FlightTakeoffIcon from '@material-ui/icons/FlightTakeoff';
 import FlightLandIcon from '@material-ui/icons/FlightLand';
@@ -30,6 +29,19 @@ export default function FlightDisplayCard({
     cityName,
   },
 }) {
+  const flight = {
+    price,
+    direct,
+    departureDate,
+    outboundCarrierName,
+    returnDate,
+    inboundCarrierName,
+    outboundOrigin,
+    outboundDestination,
+    inboundOrigin,
+    inboundDestination,
+    cityName,
+  };
   return (
     <>
       {returnDate ? (
@@ -63,7 +75,7 @@ export default function FlightDisplayCard({
               <Button color='primary' startIcon={<ShoppingCartOutlinedIcon />}>
                 Buy
               </Button>
-              <SaveFlightButton />
+              <SaveFlightButton flight={flight} />
               {/* <Button
                 color='secondary'
                 startIcon={<FavoriteBorderOutlinedIcon />}>
@@ -181,7 +193,7 @@ export default function FlightDisplayCard({
               <Button color='primary' startIcon={<ShoppingCartOutlinedIcon />}>
                 Buy
               </Button>
-              <SaveFlightButton />
+              <SaveFlightButton flight={flight} />
               {/* <Button
                 color='secondary'
                 startIcon={<FavoriteBorderOutlinedIcon />}>

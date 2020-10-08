@@ -37,7 +37,7 @@ module.exports = {
       const newUser = new User({
         firstName,
         lastName,
-        email,
+        email: email.toLowerCase(),
         passwordHash,
         createdAt: new Date().toISOString(),
       });
@@ -45,7 +45,7 @@ module.exports = {
       const savedUser = await newUser.save();
 
       const userForToken = {
-        email: savedUser.email,
+        email: savedUser.email.toLowerCase(),
         id: savedUser._id,
       };
 
@@ -64,7 +64,7 @@ module.exports = {
         throw new UserInputError('Errors', { errors });
       }
 
-      const user = await User.findOne({ email });
+      const user = await User.findOne({ email: email.toLowerCase() });
 
       if (!user) {
         throw new UserInputError('Account not found', {
@@ -79,7 +79,7 @@ module.exports = {
       }
 
       const userForToken = {
-        email: user.email,
+        email: user.email.toLowerCase(),
         id: user._id,
       };
 
@@ -87,6 +87,35 @@ module.exports = {
         expiresIn: '1h',
       });
 
+      return {
+        firstName: user.firstName,
+        lastName: user.lastName,
+        email: user.email,
+        createdAt: user.createdAt,
+        passwordHash: user.passwordHash,
+        id: user._id,
+        token,
+        savedFlights: [...user.savedFlights],
+      };
+    },
+  },
+  Query: {
+    getUser: async (_, args, context) => {
+      const validateToken = (str) => {
+        if (str && str.startsWith('bearer ')) {
+          return str.substring(7);
+        } else {
+          return null;
+        }
+      };
+
+      const token = validateToken(context.req.headers.authorization);
+      const decodedToken = jwt.verify(token, process.env.SECRET);
+
+      if (!(token || decodedToken.id)) {
+        throw new AuthenticationError('BAD TOKEN');
+      }
+      const user = await User.findById(decodedToken.id);
       return {
         firstName: user.firstName,
         lastName: user.lastName,

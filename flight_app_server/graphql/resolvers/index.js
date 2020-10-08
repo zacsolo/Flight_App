@@ -7,6 +7,7 @@ const resolvers = {
   Query: {
     ...flightResolver.Query,
     ...placeResolver.Query,
+    ...userResolver.Query,
   },
   Mutation: {
     ...userResolver.Mutation,
