@@ -91,6 +91,41 @@ export const SAVE_FLIGHT_TO_USER = gql`
   }
 `;
 
+export const REMOVE_FLIGHT_FROM_USER = gql`
+  mutation removeUserFlight(
+    $departureDate: String!
+    $outboundOrigin: String!
+    $outboundDestination: String!
+  ) {
+    removeUserFlight(
+      departureDate: $departureDate
+      outboundOrigin: $outboundOrigin
+      outboundDestination: $outboundDestination
+    ) {
+      id
+      firstName
+      lastName
+      email
+      passwordHash
+      createdAt
+      savedFlights {
+        price
+        direct
+        departureDate
+        outboundCarrierName
+        cityName
+        returnDate
+        inboundCarrierName
+        outboundOrigin
+        outboundDestination
+        inboundOrigin
+        inboundDestination
+      }
+      token
+    }
+  }
+`;
+
 export const GET_USER = gql`
   query getUser {
     getUser {

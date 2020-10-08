@@ -1,17 +1,45 @@
-import React, { useContext } from 'react';
+import React, { useContext, useEffect } from 'react';
 import './App.css';
 import Home from './pages/Home';
 import ProfilePage from './pages/ProfilePage';
 import LoginPage from './pages/LoginPage';
 import NavBar from './components/NavBar';
-import { BrowserRouter, Switch, Route, Redirect } from 'react-router-dom';
+import {
+  BrowserRouter,
+  Switch,
+  Route,
+  Redirect,
+  useHistory,
+} from 'react-router-dom';
 import SignUpPage from './pages/SignUpPage';
 import { GlobalSearchStateContext } from './utils/context';
+import { useQuery } from '@apollo/client';
+import { GET_USER } from './gql/UserMutations';
+import { useApolloClient } from '@apollo/client';
 
 function App() {
-  const { isLoggedIn } = useContext(GlobalSearchStateContext);
+  const client = useApolloClient();
+  const history = useHistory();
+  const { isLoggedIn, setIsLoggedIn, setFirstSearch } = useContext(
+    GlobalSearchStateContext
+  );
+  const { error } = useQuery(GET_USER);
   console.log('LOCAL STORAGE:', localStorage);
   console.log('LOG IN STATUS:', isLoggedIn);
+
+  useEffect(() => {
+    if (error) {
+      client
+        .resetStore()
+        .then(() => {
+          localStorage.clear();
+          setFirstSearch(true);
+          setIsLoggedIn(false);
+          history.push('/search');
+        })
+        .catch((error) => console.log(error));
+    }
+  }, [error]);
 
   return (
     <BrowserRouter>

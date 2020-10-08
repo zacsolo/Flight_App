@@ -28,6 +28,8 @@ export default function FlightDisplayCard({
     inboundDestination,
     cityName,
   },
+  saved,
+  removeSingleFlight,
 }) {
   const flight = {
     price,
@@ -42,6 +44,7 @@ export default function FlightDisplayCard({
     inboundDestination,
     cityName,
   };
+  console.log(saved);
   return (
     <>
       {returnDate ? (
@@ -75,7 +78,11 @@ export default function FlightDisplayCard({
               <Button color='primary' startIcon={<ShoppingCartOutlinedIcon />}>
                 Buy
               </Button>
-              <SaveFlightButton flight={flight} />
+              <SaveFlightButton
+                flight={flight}
+                saved={saved}
+                removeSingleFlight={removeSingleFlight}
+              />
               {/* <Button
                 color='secondary'
                 startIcon={<FavoriteBorderOutlinedIcon />}>
@@ -193,7 +200,11 @@ export default function FlightDisplayCard({
               <Button color='primary' startIcon={<ShoppingCartOutlinedIcon />}>
                 Buy
               </Button>
-              <SaveFlightButton flight={flight} />
+              <SaveFlightButton
+                flight={flight}
+                saved={saved}
+                removeSingleFlight={removeSingleFlight}
+              />
               {/* <Button
                 color='secondary'
                 startIcon={<FavoriteBorderOutlinedIcon />}>
