@@ -14,6 +14,7 @@ import { useLocation } from 'react-router-dom';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Badge from '@material-ui/core/Badge';
 import CheckCircleIcon from '@material-ui/icons/CheckCircle';
+import LoginModal from '../pages/LoginModal';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -101,7 +102,7 @@ export default function NavBar() {
             </IconButton>
           ) : (
             <>
-              {pathname === '/login' ? (
+              {/* {pathname === '/login' ? (
                 <Button component={Link} to='/signup' color='inherit'>
                   Signup
                 </Button>
@@ -118,7 +119,8 @@ export default function NavBar() {
                     Signup
                   </Button>
                 </>
-              )}
+              )} */}
+              <LoginModal />
             </>
           )}
         </Toolbar>

@@ -9,6 +9,7 @@ import { GlobalSearchStateContext } from '../utils/context';
 import FlightForm from '../components/FlightForm';
 import FlightDisplayCard from '../components/FlightDisplayCard';
 import SearchDrawer from '../components/SearchDrawer';
+import Hiker from '../media/Hiker_v1.png';
 
 export default function ChooseDestinationFlight() {
   const { searchDrawerOpen, firstSearch, setFirstSearch } = useContext(
@@ -60,7 +61,10 @@ export default function ChooseDestinationFlight() {
   return (
     <div className='App'>
       {firstSearch && (
-        <FlightForm error={error} searchForFlights={searchForFlights} />
+        <>
+          <FlightForm error={error} searchForFlights={searchForFlights} />
+          <img src={Hiker} alt='travel image' style={{ width: '100%' }} />
+        </>
       )}
       {!firstSearch && searchDrawerOpen ? (
         <SearchDrawer>
@@ -68,20 +72,20 @@ export default function ChooseDestinationFlight() {
         </SearchDrawer>
       ) : null}
       {data && !loading && (
-        <div>
+        <>
           {roundTripOptions.map((f) => (
             <FlightDisplayCard key={f.id} flight={{ ...f }} />
           ))}
           {error && console.log(error)}
-        </div>
+        </>
       )}
       {oneWayData && !oneWayLoading && (
-        <div>
+        <>
           {oneWayOptions.map((f) => (
             <FlightDisplayCard key={f.id} flight={{ ...f }} />
           ))}
           {oneWayError && console.log(oneWayError)}
-        </div>
+        </>
       )}
     </div>
   );
