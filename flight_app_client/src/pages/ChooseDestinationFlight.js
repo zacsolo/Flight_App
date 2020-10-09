@@ -63,7 +63,7 @@ export default function ChooseDestinationFlight() {
       {firstSearch && (
         <>
           <FlightForm error={error} searchForFlights={searchForFlights} />
-          <img src={Hiker} alt='travel image' style={{ width: '100%' }} />
+          <img src={Hiker} alt='travel' style={{ width: '100%' }} />
         </>
       )}
       {!firstSearch && searchDrawerOpen ? (

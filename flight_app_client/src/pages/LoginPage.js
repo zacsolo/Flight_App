@@ -18,9 +18,12 @@ export default function LoginPage() {
     password: '',
   });
   const [errors, setErrors] = useState();
-  const { isLoggedIn, setIsLoggedIn, setFirstSearch } = useContext(
-    GlobalSearchStateContext
-  );
+  const {
+    isLoggedIn,
+    setIsLoggedIn,
+    setFirstSearch,
+    setLoginModalOpen,
+  } = useContext(GlobalSearchStateContext);
 
   useEffect(() => {
     if (data || isLoggedIn) {
@@ -39,11 +42,11 @@ export default function LoginPage() {
     const { email, password } = formState;
     const { errors, valid } = validateUserLogin(email, password);
     if (valid) {
-      login({ variables: { email: email.toLowerCase(), password } }).catch(
-        (err) => {
+      login({ variables: { email: email.toLowerCase(), password } })
+        .then(() => setLoginModalOpen(false))
+        .catch((err) => {
           setErrors({ ...errors, graphQL: err.graphQLErrors[0] });
-        }
-      );
+        });
     } else {
       setErrors(errors);
     }
@@ -60,11 +63,10 @@ export default function LoginPage() {
         style={{
           width: '300px',
           margin: 'auto',
-          paddingTop: '80px',
         }}>
-        <Typography color='primary' align='center' variant='h4'>
+        {/* <Typography color='primary' align='center' variant='h5'>
           Login to your account
-        </Typography>
+        </Typography> */}
       </div>
       {errors ? (
         <form
@@ -73,7 +75,7 @@ export default function LoginPage() {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            width: '300px',
+            width: '100%',
             margin: 'auto',
           }}>
           <TextField
@@ -113,7 +115,7 @@ export default function LoginPage() {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            width: '300px',
+            width: '100%',
             margin: 'auto',
           }}>
           <TextField

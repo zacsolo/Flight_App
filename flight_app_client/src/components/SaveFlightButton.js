@@ -4,19 +4,15 @@ import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteIcon from '@material-ui/icons/Delete';
 import Button from '@material-ui/core/Button';
 import { GlobalSearchStateContext } from '../utils/context';
-import { Link } from 'react-router-dom';
 import { useMutation } from '@apollo/client';
-import {
-  SAVE_FLIGHT_TO_USER,
-  REMOVE_FLIGHT_FROM_USER,
-} from '../gql/UserMutations';
+import { SAVE_FLIGHT_TO_USER } from '../gql/UserMutations';
 
 export default function SaveFlightButton({
   flight,
   saved,
   removeSingleFlight,
 }) {
-  const { isLoggedIn, setCheckedSavedFlights } = useContext(
+  const { isLoggedIn, setCheckedSavedFlights, setLoginModalOpen } = useContext(
     GlobalSearchStateContext
   );
   const [saveFeedBack, setSaveFeedback] = useState(false);
@@ -62,8 +58,7 @@ export default function SaveFlightButton({
         <Button
           color='secondary'
           startIcon={<FavoriteBorderOutlinedIcon />}
-          component={Link}
-          to='/login'>
+          onClick={() => setLoginModalOpen(true)}>
           Save
         </Button>
       )}

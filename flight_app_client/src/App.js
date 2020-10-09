@@ -16,13 +16,17 @@ import { GlobalSearchStateContext } from './utils/context';
 import { useQuery } from '@apollo/client';
 import { GET_USER } from './gql/UserMutations';
 import { useApolloClient } from '@apollo/client';
+import LoginModal from './pages/LoginModal';
 
 function App() {
   const client = useApolloClient();
   const history = useHistory();
-  const { isLoggedIn, setIsLoggedIn, setFirstSearch } = useContext(
-    GlobalSearchStateContext
-  );
+  const {
+    isLoggedIn,
+    setIsLoggedIn,
+    setFirstSearch,
+    loginModalOpen,
+  } = useContext(GlobalSearchStateContext);
   const { error } = useQuery(GET_USER);
   console.log('LOCAL STORAGE:', localStorage);
   console.log('LOG IN STATUS:', isLoggedIn);
@@ -45,7 +49,9 @@ function App() {
     <BrowserRouter>
       <NavBar />
       <Switch>
-        <Route path='/search'>{<Home />}</Route>
+        <Route path='/search'>
+          {loginModalOpen ? <LoginModal /> : <Home />}
+        </Route>
 
         <Route path='/user'>
           {isLoggedIn ? <ProfilePage /> : <Redirect to='/search' />}
@@ -54,7 +60,6 @@ function App() {
         <Route path='/login'>
           {isLoggedIn ? <Redirect to='/search' /> : <LoginPage />}
         </Route>
-
         <Route path='/signup'>
           {isLoggedIn ? <Redirect to='/search' /> : <SignUpPage />}
         </Route>

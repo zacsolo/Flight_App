@@ -10,6 +10,7 @@ import { useLazyQuery } from '@apollo/client';
 import FlightForm from '../components/FlightForm';
 import FlightDisplayCard from '../components/FlightDisplayCard';
 import SearchDrawer from '../components/SearchDrawer';
+import Hiker from '../media/Hiker_v1.png';
 
 export default function AnywhereFlight() {
   const { searchDrawerOpen, firstSearch, setFirstSearch } = useContext(
@@ -71,11 +72,14 @@ export default function AnywhereFlight() {
   return (
     <div className='App'>
       {firstSearch && (
-        <FlightForm
-          error={error ? error : roundTripError ? roundTripError : null}
-          searchForFlights={searchForFlights}
-          noDestinationPicker={true}
-        />
+        <>
+          <FlightForm
+            error={error ? error : roundTripError ? roundTripError : null}
+            searchForFlights={searchForFlights}
+            noDestinationPicker={true}
+          />
+          <img src={Hiker} alt='travel' style={{ width: '100%' }} />
+        </>
       )}
       {!firstSearch && searchDrawerOpen ? (
         <SearchDrawer>

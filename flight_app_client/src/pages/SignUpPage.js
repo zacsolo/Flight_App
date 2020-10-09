@@ -6,13 +6,16 @@ import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
 import { validateUserSignUp } from '../utils/validUser';
 import { SIGN_UP } from '../gql/UserMutations';
-import { FormHelperText } from '@material-ui/core';
+import { FormHelperText, Typography } from '@material-ui/core';
 import { GlobalSearchStateContext } from '../utils/context';
 
 export default function SignUpPage() {
-  const { isLoggedIn, setIsLoggedIn, setFirstSearch } = useContext(
-    GlobalSearchStateContext
-  );
+  const {
+    isLoggedIn,
+    setIsLoggedIn,
+    setFirstSearch,
+    setLoginModalOpen,
+  } = useContext(GlobalSearchStateContext);
   const [signup, { data }] = useMutation(SIGN_UP);
   const [formState, setFormState] = useState({
     firstName: '',
@@ -55,7 +58,9 @@ export default function SignUpPage() {
       console.log({ firstName, lastName, email, password, confirmPassword });
       signup({
         variables: { firstName, lastName, email, password, confirmPassword },
-      }).catch((error) => setErrors({ ...errors, graphQL: error }));
+      })
+        .then(() => setLoginModalOpen(false))
+        .catch((error) => setErrors({ ...errors, graphQL: error }));
     } else {
       setErrors(errors);
       console.log({ firstName, lastName, email, password, confirmPassword });
@@ -74,9 +79,8 @@ export default function SignUpPage() {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            width: '300px',
+            width: '100%',
             margin: 'auto',
-            paddingTop: '80px',
           }}>
           <TextField
             error={errors.firstName && true}
@@ -139,9 +143,8 @@ export default function SignUpPage() {
           style={{
             display: 'flex',
             flexDirection: 'column',
-            width: '300px',
+            width: '100%',
             margin: 'auto',
-            paddingTop: '80px',
           }}>
           <TextField
             id='standard-basic'

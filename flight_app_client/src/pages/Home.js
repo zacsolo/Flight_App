@@ -16,6 +16,3 @@ export default function Home() {
     </>
   );
 }
-
-//Home is the only component rendered by APP
-//Contains static navbar and a variable form

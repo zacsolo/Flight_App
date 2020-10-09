@@ -40,6 +40,7 @@ export default function NavBar() {
     setFirstSearch,
     isLoggedIn,
     checkedSavedFlights,
+    setLoginModalOpen,
   } = useContext(GlobalSearchStateContext);
 
   const restartSearch = () => {
@@ -101,27 +102,12 @@ export default function NavBar() {
               )}
             </IconButton>
           ) : (
-            <>
-              {/* {pathname === '/login' ? (
-                <Button component={Link} to='/signup' color='inherit'>
-                  Signup
-                </Button>
-              ) : pathname === '/signup' ? (
-                <Button component={Link} to='/login' color='inherit'>
-                  Login
-                </Button>
-              ) : (
-                <>
-                  <Button component={Link} to='/login' color='inherit'>
-                    Login
-                  </Button>
-                  <Button component={Link} to='/signup' color='inherit'>
-                    Signup
-                  </Button>
-                </>
-              )} */}
-              <LoginModal />
-            </>
+            <IconButton
+              edge='end'
+              color='inherit'
+              onClick={() => setLoginModalOpen(true)}>
+              <AccountCircleIcon />
+            </IconButton>
           )}
         </Toolbar>
       </AppBar>

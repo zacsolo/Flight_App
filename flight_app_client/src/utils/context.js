@@ -7,6 +7,7 @@ const GlobalSearchStateContextProvider = (props) => {
   const [searchDrawerOpen, setSearchDrawerOpen] = useState(false);
   const [firstSearch, setFirstSearch] = useState(true);
   const [checkedSavedFlights, setCheckedSavedFlights] = useState(false);
+  const [loginModalOpen, setLoginModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(
     localStorage.getItem('userToken')
   );
@@ -23,6 +24,8 @@ const GlobalSearchStateContextProvider = (props) => {
       setIsLoggedIn,
       checkedSavedFlights,
       setCheckedSavedFlights,
+      loginModalOpen,
+      setLoginModalOpen,
     }),
     [
       adventureMode,
@@ -30,6 +33,7 @@ const GlobalSearchStateContextProvider = (props) => {
       firstSearch,
       isLoggedIn,
       checkedSavedFlights,
+      loginModalOpen,
     ]
   );
   return (

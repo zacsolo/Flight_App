@@ -90,11 +90,6 @@ export default function FlightDisplayCard({
                   saved={saved}
                   removeSingleFlight={removeSingleFlight}
                 />
-                {/* <Button
-                color='secondary'
-                startIcon={<FavoriteBorderOutlinedIcon />}>
-                Save
-              </Button> */}
               </CardContent>
             </CardContent>
             {/* PRICE CARD END */}
@@ -219,11 +214,6 @@ export default function FlightDisplayCard({
                   saved={saved}
                   removeSingleFlight={removeSingleFlight}
                 />
-                {/* <Button
-                color='secondary'
-                startIcon={<FavoriteBorderOutlinedIcon />}>
-                Save
-              </Button> */}
               </CardContent>
             </CardContent>
 
