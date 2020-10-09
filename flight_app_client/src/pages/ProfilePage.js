@@ -5,14 +5,14 @@ import { Button, Paper, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
 import { useApolloClient, useQuery } from '@apollo/client';
 import { GlobalSearchStateContext } from '../utils/context';
-import FlightDisplayCard from '../components/FlightDisplayCard';
+import SimplifiedFlightCard from '../components/SimplifiedFlightCard';
 import { useMutation } from '@apollo/client';
 import { REMOVE_FLIGHT_FROM_USER } from '../gql/UserMutations';
 
 export default function ProfilePage() {
   const route = useRouteMatch();
   const [removeUserFlight] = useMutation(REMOVE_FLIGHT_FROM_USER);
-  const { data } = useQuery(GET_USER);
+  const { data, error } = useQuery(GET_USER);
   const client = useApolloClient();
   const history = useHistory();
   const { setIsLoggedIn, setFirstSearch, setCheckedSavedFlights } = useContext(
@@ -23,6 +23,17 @@ export default function ProfilePage() {
     console.log(route);
     if (route.path === '/user') {
       setCheckedSavedFlights(true);
+    }
+    if (error) {
+      localStorage.clear();
+      setFirstSearch(true);
+      setIsLoggedIn(false);
+      client
+        .resetStore()
+        .then(() => {
+          history.push('/search');
+        })
+        .catch((error) => console.log(error));
     }
   }, []);
 
@@ -87,7 +98,7 @@ export default function ProfilePage() {
 
       {data &&
         data.getUser.savedFlights.map((flight) => (
-          <FlightDisplayCard
+          <SimplifiedFlightCard
             flight={flight}
             key={`${flight.price}${flight.departureDate}`}
             saved={true}

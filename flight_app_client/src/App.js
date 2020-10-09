@@ -29,17 +29,17 @@ function App() {
 
   useEffect(() => {
     if (error) {
+      localStorage.clear();
+      setFirstSearch(true);
+      setIsLoggedIn(false);
       client
         .resetStore()
         .then(() => {
-          localStorage.clear();
-          setFirstSearch(true);
-          setIsLoggedIn(false);
           history.push('/search');
         })
         .catch((error) => console.log(error));
     }
-  }, []);
+  }, [error]);
 
   return (
     <BrowserRouter>
