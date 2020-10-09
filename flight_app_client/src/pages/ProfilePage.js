@@ -1,4 +1,5 @@
 import React, { useEffect, useContext } from 'react';
+import { useRouteMatch } from 'react-router-dom';
 import { GET_USER } from '../gql/UserMutations';
 import { Button, Paper, Typography } from '@material-ui/core';
 import { useHistory } from 'react-router-dom';
@@ -9,13 +10,21 @@ import { useMutation } from '@apollo/client';
 import { REMOVE_FLIGHT_FROM_USER } from '../gql/UserMutations';
 
 export default function ProfilePage() {
+  const route = useRouteMatch();
   const [removeUserFlight] = useMutation(REMOVE_FLIGHT_FROM_USER);
   const { data } = useQuery(GET_USER);
   const client = useApolloClient();
   const history = useHistory();
-  const { setIsLoggedIn, setFirstSearch } = useContext(
+  const { setIsLoggedIn, setFirstSearch, setCheckedSavedFlights } = useContext(
     GlobalSearchStateContext
   );
+
+  useEffect(() => {
+    console.log(route);
+    if (route.path === '/user') {
+      setCheckedSavedFlights(true);
+    }
+  }, []);
 
   const logoutReset = () => {
     client.resetStore().then(() => {

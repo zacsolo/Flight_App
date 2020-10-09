@@ -12,6 +12,8 @@ import { GlobalSearchStateContext } from '../utils/context';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import Badge from '@material-ui/core/Badge';
+import CheckCircleIcon from '@material-ui/icons/CheckCircle';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,19 +38,14 @@ export default function NavBar() {
     searchDrawerOpen,
     setFirstSearch,
     isLoggedIn,
+    checkedSavedFlights,
   } = useContext(GlobalSearchStateContext);
 
   const restartSearch = () => {
     setFirstSearch(true);
     setAdventureMode(!adventureMode);
   };
-  console.log('______START________');
-  console.log('FIRST SEARCH ?', firstSearch);
-
-  console.log('Search Drawer Open', searchDrawerOpen);
-
-  console.log('Logged In?', isLoggedIn);
-  console.log('______END________');
+  console.log(checkedSavedFlights);
 
   return (
     <div className={classes.root}>
@@ -90,7 +87,22 @@ export default function NavBar() {
           ) : null}
           {isLoggedIn ? (
             <IconButton edge='end' color='inherit' component={Link} to='/user'>
-              <AccountCircleIcon />
+              {/* if a new flight is saved then display the dot
+              create a piece of context state, that is updated only when
+              "/user" is visited. 
+              if the route is "/user" then setCheckedSavedFlights to true
+              and the dot will not be displayed */}
+              {checkedSavedFlights ? (
+                <AccountCircleIcon />
+              ) : (
+                <Badge
+                  color='secondary'
+                  overlap='circle'
+                  badgeContent=''
+                  variant='dot'>
+                  <AccountCircleIcon />
+                </Badge>
+              )}
             </IconButton>
           ) : (
             <>

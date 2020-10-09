@@ -16,7 +16,9 @@ export default function SaveFlightButton({
   saved,
   removeSingleFlight,
 }) {
-  const { isLoggedIn } = useContext(GlobalSearchStateContext);
+  const { isLoggedIn, setCheckedSavedFlights } = useContext(
+    GlobalSearchStateContext
+  );
   const [saveFeedBack, setSaveFeedback] = useState(false);
   const [saveUserFlight, { data }] = useMutation(SAVE_FLIGHT_TO_USER);
 
@@ -24,6 +26,7 @@ export default function SaveFlightButton({
     saveUserFlight({ variables: { ...flight } })
       .then(() => {
         setSaveFeedback(true);
+        setCheckedSavedFlights(false);
       })
       .catch((error) => console.log({ error }));
   };
