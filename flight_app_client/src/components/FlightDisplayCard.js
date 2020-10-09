@@ -44,7 +44,7 @@ export default function FlightDisplayCard({
     inboundDestination,
     cityName,
   };
-  console.log(saved);
+
   return (
     <>
       {returnDate ? (

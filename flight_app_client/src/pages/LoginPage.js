@@ -8,6 +8,7 @@ import { validateUserLogin } from '../utils/validUser';
 import { LOGIN_USER } from '../gql/UserMutations';
 
 import { GlobalSearchStateContext } from '../utils/context';
+import { Typography } from '@material-ui/core';
 
 export default function LoginPage() {
   const history = useHistory();
@@ -55,6 +56,16 @@ export default function LoginPage() {
 
   return (
     <>
+      <div
+        style={{
+          width: '300px',
+          margin: 'auto',
+          paddingTop: '80px',
+        }}>
+        <Typography color='primary' align='center' variant='h4'>
+          Login to your account
+        </Typography>
+      </div>
       {errors ? (
         <form
           onSubmit={handleSubmit}
@@ -64,7 +75,6 @@ export default function LoginPage() {
             flexDirection: 'column',
             width: '300px',
             margin: 'auto',
-            paddingTop: '80px',
           }}>
           <TextField
             error={errors.email || errors.graphQL ? true : false}
@@ -105,7 +115,6 @@ export default function LoginPage() {
             flexDirection: 'column',
             width: '300px',
             margin: 'auto',
-            paddingTop: '80px',
           }}>
           <TextField
             id='standard-basic'

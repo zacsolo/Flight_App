@@ -87,11 +87,6 @@ export default function NavBar() {
           ) : null}
           {isLoggedIn ? (
             <IconButton edge='end' color='inherit' component={Link} to='/user'>
-              {/* if a new flight is saved then display the dot
-              create a piece of context state, that is updated only when
-              "/user" is visited. 
-              if the route is "/user" then setCheckedSavedFlights to true
-              and the dot will not be displayed */}
               {checkedSavedFlights ? (
                 <AccountCircleIcon />
               ) : (
@@ -106,12 +101,24 @@ export default function NavBar() {
             </IconButton>
           ) : (
             <>
-              <Button component={Link} to='/login' color='inherit'>
-                Login
-              </Button>
-              <Button component={Link} to='/signup' color='inherit'>
-                Signup
-              </Button>
+              {pathname === '/login' ? (
+                <Button component={Link} to='/signup' color='inherit'>
+                  Signup
+                </Button>
+              ) : pathname === '/signup' ? (
+                <Button component={Link} to='/login' color='inherit'>
+                  Login
+                </Button>
+              ) : (
+                <>
+                  <Button component={Link} to='/login' color='inherit'>
+                    Login
+                  </Button>
+                  <Button component={Link} to='/signup' color='inherit'>
+                    Signup
+                  </Button>
+                </>
+              )}
             </>
           )}
         </Toolbar>

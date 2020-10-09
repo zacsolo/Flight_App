@@ -45,13 +45,18 @@ export default function SimplifiedFlightCard({
     inboundDestination,
     cityName,
   };
-  console.log(saved);
+
   return (
     <>
       {returnDate ? (
         <Card elevation={3} style={{ marginBottom: 10, position: 'relative' }}>
           <CardContent>
-            <Typography variant='h4'>{cityName}</Typography>
+            <Typography variant='h4'>
+              {cityName.length < 10 ? cityName : cityName.split(' ')[0]}
+            </Typography>
+            <Typography variant='h5'>
+              {cityName.length > 10 && cityName.split(' ')[1]}
+            </Typography>
           </CardContent>
           <CardContent style={{ position: 'absolute', top: '0', right: '0' }}>
             <ArrowUpwardIcon color='primary' fontSize='large' />

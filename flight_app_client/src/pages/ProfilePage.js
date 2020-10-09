@@ -81,7 +81,10 @@ export default function ProfilePage() {
             <Button
               size='large'
               color='secondary'
-              onClick={() => history.push('/search')}
+              onClick={() => {
+                setFirstSearch(true);
+                history.push('/search');
+              }}
               style={{ marginTop: '25px' }}>
               Start a new search
             </Button>
