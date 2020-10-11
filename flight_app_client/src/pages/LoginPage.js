@@ -59,15 +59,6 @@ export default function LoginPage() {
 
   return (
     <>
-      <div
-        style={{
-          width: '300px',
-          margin: 'auto',
-        }}>
-        {/* <Typography color='primary' align='center' variant='h5'>
-          Login to your account
-        </Typography> */}
-      </div>
       {errors ? (
         <form
           onSubmit={handleSubmit}
@@ -77,6 +68,7 @@ export default function LoginPage() {
             flexDirection: 'column',
             width: '100%',
             margin: 'auto',
+            paddingTop: '20px',
           }}>
           <TextField
             error={errors.email || errors.graphQL ? true : false}
@@ -104,7 +96,7 @@ export default function LoginPage() {
             onChange={(e) => handleChange(e)}
           />
 
-          <Button color='primary' type='submit'>
+          <Button color='primary' type='submit' style={{ marginTop: '20px' }}>
             Login
           </Button>
         </form>
@@ -117,6 +109,7 @@ export default function LoginPage() {
             flexDirection: 'column',
             width: '100%',
             margin: 'auto',
+            paddingTop: '20px',
           }}>
           <TextField
             id='standard-basic'
@@ -133,7 +126,7 @@ export default function LoginPage() {
             type='password'
             onChange={(e) => handleChange(e)}
           />
-          <Button color='primary' type='submit'>
+          <Button color='primary' type='submit' style={{ marginTop: '20px' }}>
             Login
           </Button>
         </form>

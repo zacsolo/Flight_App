@@ -28,8 +28,6 @@ function App() {
     loginModalOpen,
   } = useContext(GlobalSearchStateContext);
   const { error } = useQuery(GET_USER);
-  console.log('LOCAL STORAGE:', localStorage);
-  console.log('LOG IN STATUS:', isLoggedIn);
 
   useEffect(() => {
     if (error) {

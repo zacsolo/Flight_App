@@ -22,7 +22,7 @@ import Calendar from '../media/recaps+winter.png';
 //Modal should also be opened when a user clicks the user icon
 //Then based on their choice then can be rerouted
 //
-//Should sign up and login be done exclusively in the modal?
+//Should sign up and loginModalPage be done exclusively in the modal?
 //Then if the mutation is successful close the modal?
 
 const styles = (theme) => ({
@@ -73,10 +73,10 @@ const DialogActions = withStyles((theme) => ({
 
 export default function LoginModal() {
   const [open, setOpen] = React.useState(false);
-  const [login, setLogin] = React.useState(false);
-  const [signUp, setSignUp] = React.useState(false);
+  const [loginModalPage, setLoginModalPage] = React.useState(false);
+  const [signUpModalPage, setSignUpModalPage] = React.useState(false);
 
-  const { loginModalOpen, setLoginModalOpen } = useContext(
+  const { loginModalOpen, setLoginModalOpen, setFirstSearch } = useContext(
     GlobalSearchStateContext
   );
 
@@ -90,24 +90,26 @@ export default function LoginModal() {
     setOpen(true);
   };
   const handleClose = () => {
+    setFirstSearch(true);
     setLoginModalOpen(false);
     setOpen(false);
   };
 
   return (
     <>
-      {login ? (
+      {loginModalPage ? (
         <Dialog
           onClose={handleClose}
           aria-labelledby='customized-dialog-title'
           open={open}>
           <DialogTitle onClose={handleClose}>Login to your account</DialogTitle>
-          <DialogContent>
+          <DialogContent style={{ minHeight: '45vh' }}>
             <img src={Calendar} alt='calendar' style={{ width: '100%' }} />
+
             <LoginPage />
           </DialogContent>
         </Dialog>
-      ) : signUp ? (
+      ) : signUpModalPage ? (
         <Dialog
           onClose={handleClose}
           aria-labelledby='customized-dialog-title'
@@ -115,7 +117,7 @@ export default function LoginModal() {
           <DialogTitle id='customized-dialog-title' onClose={handleClose}>
             Join the adventure
           </DialogTitle>
-          <DialogContent>
+          <DialogContent style={{ minHeight: '35vh' }}>
             <img src={Calendar} alt='calendar' style={{ width: '100%' }} />
             <SignUpPage />
           </DialogContent>
@@ -129,7 +131,7 @@ export default function LoginModal() {
             <DialogTitle
               id='customized-dialog-title'
               onClose={handleClose}></DialogTitle>
-            <DialogContent>
+            <DialogContent style={{ minHeight: '35vh' }}>
               <img src={surferImage} alt='surfer' style={{ width: '100%' }} />
               <Typography
                 variant='h5'
@@ -144,10 +146,16 @@ export default function LoginModal() {
               </Typography>
             </DialogContent>
             <DialogActions>
-              <Button autoFocus onClick={() => setLogin(true)} color='primary'>
+              <Button
+                autoFocus
+                onClick={() => setLoginModalPage(true)}
+                color='primary'>
                 Login
               </Button>
-              <Button autoFocus onClick={() => setSignUp(true)} color='primary'>
+              <Button
+                autoFocus
+                onClick={() => setSignUpModalPage(true)}
+                color='primary'>
                 Signup
               </Button>
             </DialogActions>

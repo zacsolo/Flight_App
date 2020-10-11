@@ -93,7 +93,7 @@ export default function NavBar() {
                 <AccountCircleIcon />
               ) : (
                 <Badge
-                  color='secondary'
+                  color={adventureMode ? 'primary' : 'secondary'}
                   overlap='circle'
                   badgeContent=''
                   variant='dot'>

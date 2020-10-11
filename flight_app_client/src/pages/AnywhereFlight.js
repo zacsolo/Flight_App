@@ -11,6 +11,7 @@ import FlightForm from '../components/FlightForm';
 import FlightDisplayCard from '../components/FlightDisplayCard';
 import SearchDrawer from '../components/SearchDrawer';
 import Hiker from '../media/Hiker_v1.png';
+import { Card } from '@material-ui/core';
 
 export default function AnywhereFlight() {
   const { searchDrawerOpen, firstSearch, setFirstSearch } = useContext(
@@ -73,12 +74,27 @@ export default function AnywhereFlight() {
     <div className='App'>
       {firstSearch && (
         <>
-          <FlightForm
-            error={error ? error : roundTripError ? roundTripError : null}
-            searchForFlights={searchForFlights}
-            noDestinationPicker={true}
+          <div
+            style={{
+              zIndex: '100',
+              position: 'relative',
+            }}>
+            <FlightForm
+              error={error ? error : roundTripError ? roundTripError : null}
+              searchForFlights={searchForFlights}
+              noDestinationPicker={true}
+            />
+          </div>
+          <img
+            src={Hiker}
+            alt='travel'
+            style={{
+              width: '100%',
+              position: 'absolute',
+              bottom: -25,
+              right: 0,
+            }}
           />
-          <img src={Hiker} alt='travel' style={{ width: '100%' }} />
         </>
       )}
       {!firstSearch && searchDrawerOpen ? (

@@ -10,6 +10,7 @@ import FlightForm from '../components/FlightForm';
 import FlightDisplayCard from '../components/FlightDisplayCard';
 import SearchDrawer from '../components/SearchDrawer';
 import Hiker from '../media/Hiker_v1.png';
+import { Card, Paper } from '@material-ui/core';
 
 export default function ChooseDestinationFlight() {
   const { searchDrawerOpen, firstSearch, setFirstSearch } = useContext(
@@ -62,8 +63,23 @@ export default function ChooseDestinationFlight() {
     <div className='App'>
       {firstSearch && (
         <>
-          <FlightForm error={error} searchForFlights={searchForFlights} />
-          <img src={Hiker} alt='travel' style={{ width: '100%' }} />
+          <div
+            style={{
+              zIndex: '100',
+              position: 'relative',
+            }}>
+            <FlightForm error={error} searchForFlights={searchForFlights} />
+          </div>
+          <img
+            src={Hiker}
+            alt='travel'
+            style={{
+              width: '100%',
+              position: 'absolute',
+              bottom: -25,
+              right: 0,
+            }}
+          />
         </>
       )}
       {!firstSearch && searchDrawerOpen ? (

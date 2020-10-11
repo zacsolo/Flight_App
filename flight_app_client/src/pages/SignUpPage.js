@@ -26,11 +26,12 @@ export default function SignUpPage() {
   });
   const [errors, setErrors] = useState();
   const history = useHistory();
+
   useEffect(() => {
     if (data || isLoggedIn) {
       setFirstSearch(true);
       setIsLoggedIn(true);
-      history.push('/user');
+      history.push('/search');
     }
   }, [data]);
 
@@ -55,15 +56,23 @@ export default function SignUpPage() {
     );
 
     if (valid) {
+      console.log('INPUT IS VALID');
       console.log({ firstName, lastName, email, password, confirmPassword });
       signup({
         variables: { firstName, lastName, email, password, confirmPassword },
       })
-        .then(() => setLoginModalOpen(false))
-        .catch((error) => setErrors({ ...errors, graphQL: error }));
+        .then((data) => {
+          console.log(data);
+          // localStorage.setItem('userToken', data.signup.token);
+          setLoginModalOpen(false);
+        })
+        .catch((error) => {
+          console.log('getting errors', { errors });
+          setErrors({ ...errors, graphQL: error });
+        });
     } else {
       setErrors(errors);
-      console.log({ firstName, lastName, email, password, confirmPassword });
+      console.log('getting errors', { errors });
     }
   };
   if (data) {
@@ -81,6 +90,7 @@ export default function SignUpPage() {
             flexDirection: 'column',
             width: '100%',
             margin: 'auto',
+            paddingTop: '20px',
           }}>
           <TextField
             error={errors.firstName && true}
@@ -132,7 +142,7 @@ export default function SignUpPage() {
           <FormHelperText error>
             {errors.graphQL ? 'Email already taken' : null}
           </FormHelperText>
-          <Button color='primary' type='submit'>
+          <Button color='primary' type='submit' style={{ marginTop: '20px' }}>
             Sign Up
           </Button>
         </form>
@@ -145,6 +155,7 @@ export default function SignUpPage() {
             flexDirection: 'column',
             width: '100%',
             margin: 'auto',
+            paddingTop: '20px',
           }}>
           <TextField
             id='standard-basic'
@@ -183,7 +194,7 @@ export default function SignUpPage() {
             value={formState.confirmPassword}
             onChange={(e) => handleChange(e)}
           />
-          <Button color='primary' type='submit'>
+          <Button color='primary' type='submit' style={{ marginTop: '20px' }}>
             Sign Up
           </Button>
         </form>

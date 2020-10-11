@@ -19,8 +19,13 @@ export default function ProfilePage() {
     GlobalSearchStateContext
   );
 
+  //Current Problem
+  //If a user logs out, and another user creates an account directly
+  //after, the old user info is still saved somewhere (presumably apollo cache)
+  //
+  //So all the old users info is still in the new users "vault"
+
   useEffect(() => {
-    console.log(route);
     if (route.path === '/user') {
       setCheckedSavedFlights(true);
     }
@@ -38,12 +43,16 @@ export default function ProfilePage() {
   }, []);
 
   const logoutReset = () => {
-    client.resetStore().then(() => {
-      localStorage.clear();
-      setFirstSearch(true);
-      setIsLoggedIn(false);
-      history.push('/search');
-    });
+    client
+      .resetStore()
+      .then(() => {
+        localStorage.clear();
+      })
+      .then(() => {
+        setFirstSearch(true);
+        setIsLoggedIn(false);
+        history.push('/search');
+      });
   };
 
   const removeSingleFlight = (flight) => {

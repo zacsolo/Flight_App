@@ -5,6 +5,10 @@
 .App {
   text-align: center;
 
-  padding-top: 30px;
+  padding-top: 35px;
+  margin: 0;
+}
+
+body {
   margin: 0;
 }
