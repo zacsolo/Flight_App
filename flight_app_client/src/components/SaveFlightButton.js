@@ -42,8 +42,11 @@ export default function SaveFlightButton({
   return (
     <>
       {isLoggedIn && saved ? (
-        <Button color='secondary' onClick={() => handleRemove()}>
-          <DeleteIcon />
+        <Button
+          color='secondary'
+          onClick={() => handleRemove()}
+          style={{ borderRadius: 50, marginLeft: '20px' }}>
+          <DeleteIcon fontSize='large' />
         </Button>
       ) : isLoggedIn && !saved ? (
         <Button

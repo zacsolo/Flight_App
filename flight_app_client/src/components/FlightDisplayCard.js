@@ -55,7 +55,12 @@ export default function FlightDisplayCard({
           {...(true ? { timeout: 1000 } : {})}>
           <Card elevation={3} style={{ marginBottom: 10 }}>
             <CardContent>
-              <Typography variant='h4'>{cityName}</Typography>
+              <Typography variant='subtitle1' color='textSecondary'>
+                from {outboundOrigin.split(',')[0]}
+              </Typography>
+              <Typography variant={cityName.length < 10 ? 'h4' : 'h5'}>
+                {cityName}
+              </Typography>
             </CardContent>
             {/* PRICE CARD START */}
             <CardContent
@@ -179,7 +184,12 @@ export default function FlightDisplayCard({
           {...(true ? { timeout: 1000 } : {})}>
           <Card elevation={3} style={{ marginBottom: 10 }}>
             <CardContent>
-              <Typography variant='h4'>{cityName}</Typography>
+              <Typography variant='subtitle1' color='textSecondary'>
+                from {outboundOrigin.split(',')[0]}
+              </Typography>
+              <Typography variant={cityName.length < 10 ? 'h4' : 'h5'}>
+                {cityName}
+              </Typography>
             </CardContent>
             {/* PRICE CARD START */}
             <CardContent
