@@ -3,7 +3,7 @@ import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
 import Typography from '@material-ui/core/Typography';
-import Button from '@material-ui/core/Button';
+
 import IconButton from '@material-ui/core/IconButton';
 import SearchIcon from '@material-ui/icons/Search';
 import { Switch } from '@material-ui/core';
@@ -13,8 +13,6 @@ import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Badge from '@material-ui/core/Badge';
-import CheckCircleIcon from '@material-ui/icons/CheckCircle';
-import LoginModal from '../pages/LoginModal';
 
 const useStyles = makeStyles((theme) => ({
   root: {
@@ -36,7 +34,6 @@ export default function NavBar() {
     firstSearch,
     setAdventureMode,
     setSearchDrawerOpen,
-    searchDrawerOpen,
     setFirstSearch,
     isLoggedIn,
     checkedSavedFlights,
@@ -74,7 +71,7 @@ export default function NavBar() {
                     color='default'
                   />
                 }
-                label='Adventure Mode'
+                label={adventureMode ? 'Engaged!' : 'Explore'}
               />
             )}
           </Typography>

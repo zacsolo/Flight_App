@@ -13,6 +13,7 @@ export default function FlightForm({
   searchForFlights,
   noDestinationPicker,
   toggleOpen,
+  drawer,
 }) {
   const [value, setValue] = useState({
     startingAirport: '',
@@ -136,17 +137,23 @@ export default function FlightForm({
     <>
       {errors.length < 1 ? (
         noDestinationPicker ? (
-          <>
+          <div
+            style={
+              drawer && {
+                textAlign: 'center',
+                marginTop: '16px',
+              }
+            }>
             <Paper
-              elevation={3}
+              elevation={drawer ? 0 : 3}
               style={{
-                maxWidth: '70%',
-                minWidth: 370,
+                maxWidth: drawer ? '100%' : '70%',
+                minWidth: drawer ? '100%' : '370px',
                 margin: '0 auto',
                 paddingTop: 5,
                 borderRadius: 15,
               }}>
-              <FormControl style={{ marginBottom: 25 }}>
+              <FormControl style={{ marginBottom: !drawer && '25px' }}>
                 <QueryInput name='startingAirport' updateState={updateState} />
                 <QueryInput
                   name='endingAirport'
@@ -172,18 +179,34 @@ export default function FlightForm({
                 </div>
               </FormControl>
             </Paper>
-            <Button
-              startIcon={<SearchIcon />}
-              onClick={handleSubmit}
-              variant='contained'
-              color='secondary'
-              style={{
-                marginTop: -20,
-                borderRadius: 20,
-              }}>
-              Let's Go!
-            </Button>
-          </>
+            {drawer ? (
+              <Button
+                startIcon={<SearchIcon />}
+                onClick={handleSubmit}
+                size='large'
+                variant='contained'
+                color='secondary'
+                style={{
+                  marginTop: 20,
+                  marginBottom: 20,
+                  borderRadius: 20,
+                }}>
+                Let's Go!
+              </Button>
+            ) : (
+              <Button
+                startIcon={<SearchIcon />}
+                onClick={handleSubmit}
+                variant='contained'
+                color='secondary'
+                style={{
+                  marginTop: -20,
+                  borderRadius: 20,
+                }}>
+                Let's Go!
+              </Button>
+            )}
+          </div>
         ) : (
           <>
             <Paper

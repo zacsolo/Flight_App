@@ -43,12 +43,7 @@ export default function TemporaryDrawer(props) {
         [classes.fullList]: anchor === 'top' || anchor === 'bottom',
       })}
       role='presentation'>
-      <div
-        style={{
-          display: 'flex',
-          justifyContent: 'space-around',
-          padding: '16px 0px 0px 16px',
-        }}>
+      <div>
         {React.cloneElement(props.children, { toggleOpen: toggleOpen })}
       </div>
     </div>

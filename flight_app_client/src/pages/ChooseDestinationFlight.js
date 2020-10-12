@@ -84,7 +84,11 @@ export default function ChooseDestinationFlight() {
       )}
       {!firstSearch && searchDrawerOpen ? (
         <SearchDrawer>
-          <FlightForm error={error} searchForFlights={searchForFlights} />
+          <FlightForm
+            error={error}
+            searchForFlights={searchForFlights}
+            drawer={true}
+          />
         </SearchDrawer>
       ) : null}
       {data && !loading && (

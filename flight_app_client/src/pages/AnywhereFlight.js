@@ -100,6 +100,7 @@ export default function AnywhereFlight() {
       {!firstSearch && searchDrawerOpen ? (
         <SearchDrawer>
           <FlightForm
+            drawer={true}
             error={error ? error : roundTripError ? roundTripError : null}
             searchForFlights={searchForFlights}
             noDestinationPicker={true}
