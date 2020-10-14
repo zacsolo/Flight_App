@@ -17,7 +17,6 @@ import { useQuery } from '@apollo/client';
 import { GET_USER } from './gql/UserMutations';
 import { useApolloClient } from '@apollo/client';
 import LoginModal from './pages/LoginModal';
-import axios from 'axios';
 
 function App() {
   const client = useApolloClient();
@@ -43,7 +42,6 @@ function App() {
         .catch((error) => console.log(error));
     }
   }, [error]);
-  console.log(process.env.API_KEY);
 
   return (
     <BrowserRouter>

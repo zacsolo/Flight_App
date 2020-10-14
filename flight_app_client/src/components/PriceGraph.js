@@ -64,8 +64,8 @@ export default function PriceGraph({ oldPrice, newPrice }) {
         <Typography variant='subtitle2' color='textSecondary'>
           Recent price {oldPrice > newPrice ? 'decrease' : 'increase'} of{' '}
           <Typography
-            variant='subtitle2'
             display='inline'
+            variant='subtitle2'
             color={oldPrice > newPrice ? 'primary' : 'secondary'}>
             ${Math.abs(newPrice - oldPrice)}
           </Typography>

@@ -5,6 +5,7 @@ import MomentUtils from '@date-io/moment';
 import { MuiPickersUtilsProvider } from '@material-ui/pickers';
 import GlobalSearchStateContextProvider from './utils/context';
 import { setContext } from '@apollo/client/link/context';
+import { StylesProvider } from '@material-ui/core/styles';
 
 import {
   ApolloClient,
@@ -35,14 +36,16 @@ const client = new ApolloClient({
 });
 
 ReactDOM.render(
-  <GlobalSearchStateContextProvider>
-    <MuiPickersUtilsProvider utils={MomentUtils}>
-      <ApolloProvider client={client}>
-        <React.StrictMode>
-          <App />
-        </React.StrictMode>
-      </ApolloProvider>
-    </MuiPickersUtilsProvider>
-  </GlobalSearchStateContextProvider>,
+  <StylesProvider injectFirst>
+    <GlobalSearchStateContextProvider>
+      <MuiPickersUtilsProvider utils={MomentUtils}>
+        <ApolloProvider client={client}>
+          <React.StrictMode>
+            <App />
+          </React.StrictMode>
+        </ApolloProvider>
+      </MuiPickersUtilsProvider>
+    </GlobalSearchStateContextProvider>
+  </StylesProvider>,
   document.getElementById('root')
 );

@@ -10,11 +10,10 @@ import RemoveIcon from '@material-ui/icons/Remove';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import FlightTakeoffIcon from '@material-ui/icons/FlightTakeoff';
 import FlightLandIcon from '@material-ui/icons/FlightLand';
-import '../FlightDisplayCard.css';
+
 import moment from 'moment';
 import SaveFlightButton from './SaveFlightButton';
-import { Grow, Zoom } from '@material-ui/core';
-import Axios from 'axios';
+import { Grow } from '@material-ui/core';
 
 export default function FlightDisplayCard({
   flight: {

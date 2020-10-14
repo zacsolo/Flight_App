@@ -10,20 +10,26 @@ import CloseIcon from '@material-ui/icons/Close';
 import Typography from '@material-ui/core/Typography';
 import surferImage from '../media/Surfer.png';
 import { GlobalSearchStateContext } from '../utils/context';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+
 import SignUpPage from './SignUpPage';
 import LoginPage from './LoginPage';
 import Calendar from '../media/recaps+winter.png';
 
-//Login Modal Should be opened when a user goes to
-//save a flight but is not logged in, or does not yet have
-//an account
+//FAR OUT MODE
+//there should be an error when a user searches for a flight
+//too far in the future.
 //
-//Modal should also be opened when a user clicks the user icon
-//Then based on their choice then can be rerouted
+//Say something like
+//"Far out dude!"
+//'(but seriously, your search returned no results and was probably too far in the future)'
+// then redirect them back to the home page
+// use astronaut picture as well
+
 //
-//Should sign up and loginModalPage be done exclusively in the modal?
-//Then if the mutation is successful close the modal?
+//When modal is existed after a search
+//the search results disappear. This shouldnt happen.
+//If you choose not to log in, your search should remain on the screen
+//
 
 const styles = (theme) => ({
   root: {
