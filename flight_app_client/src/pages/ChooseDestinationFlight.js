@@ -34,7 +34,6 @@ export default function ChooseDestinationFlight() {
     fetchPolicy: 'no-cache',
     onCompleted: (data) => setOneWayOptions(data.getFlightsWithDestOneWay),
   });
-  console.log(firstSearch);
   const searchForFlights = (flightQuery) => {
     setFirstSearch(false);
     setOneWayOptions([]);

@@ -3,11 +3,34 @@ import QueryInput from '../components/QueryInput';
 import BasicDatePicker from './BasicDatePicker';
 import Button from '@material-ui/core/Button';
 import CheckBox from '../components/CheckBox';
+import { makeStyles } from '@material-ui/core';
 import { validateFlightAnywhere } from '../utils/validFlight';
 import { validateFlightWithDest } from '../utils/validFlight';
-
 import { FormControl, Paper } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+
+const useStyles = makeStyles({
+  formWrapper: {
+    textAlign: (drawer) => drawer && 'center',
+    marginTop: (drawer) => drawer && '16px',
+  },
+  formDisplay: {
+    maxWidth: (drawer) => (drawer ? '100%' : '70%'),
+    minWidth: (drawer) => (drawer ? '100%' : '370px'),
+    margin: '0 auto',
+    paddingTop: 5,
+    borderRadius: 15,
+  },
+  formContainer: {
+    marginBottom: (drawer) => !drawer && '25px',
+  },
+  checkboxWrapper: { margin: '0 auto' },
+  formSearchButton: {
+    marginTop: (drawer) => (drawer ? 20 : -20),
+    borderRadius: 20,
+    marginBottom: (drawer) => (drawer ? 20 : 0),
+  },
+});
 
 export default function FlightForm({
   searchForFlights,
@@ -15,6 +38,10 @@ export default function FlightForm({
   toggleOpen,
   drawer,
 }) {
+  let drawerOpen = drawer ? true : false;
+  const classes = useStyles(drawerOpen);
+  //
+  //State_____________
   const [value, setValue] = useState({
     startingAirport: '',
     endingAirport: '',
@@ -22,14 +49,12 @@ export default function FlightForm({
     inboundDate: '',
     oneWay: false,
   });
-
   const [disableDates, setDisableDates] = useState(false);
   const [errors, setErrors] = useState([]);
+  //_______________
 
-  // if (error) {
-  //   console.log('ERROR', error.graphQLErrors[0].extensions.errors);
-  // }
-
+  //---CAN PROBABLY REFACTOR---
+  //---These two together---
   const updateState = (inputPlace, name) => {
     const newPlace = inputPlace[0].placeId;
     setValue({ ...value, [name]: newPlace });
@@ -37,6 +62,7 @@ export default function FlightForm({
   const updateDate = (inputDate, name) => {
     setValue({ ...value, [name]: inputDate });
   };
+  //
 
   const anytimeCheckbox = (checked) => {
     if (value.oneWay) {
@@ -48,7 +74,6 @@ export default function FlightForm({
             inboundDate: '',
           })
         : setValue({ ...value, outboundDate: '', inboundDate: '' });
-      console.log('SET STATE', value);
     } else if (!value.oneWay) {
       setDisableDates(!disableDates);
       checked
@@ -128,245 +153,55 @@ export default function FlightForm({
       }
     }
 
-    console.log('STATE BEING SEARCHED FOR', value);
-
     searchForFlights(value);
   };
 
   return (
-    <>
-      {errors.length < 1 ? (
-        noDestinationPicker ? (
-          <div
-            style={
-              drawer && {
-                textAlign: 'center',
-                marginTop: '16px',
-              }
-            }>
-            <Paper
-              elevation={drawer ? 0 : 3}
-              style={{
-                maxWidth: drawer ? '100%' : '70%',
-                minWidth: drawer ? '100%' : '370px',
-                margin: '0 auto',
-                paddingTop: 5,
-                borderRadius: 15,
-              }}>
-              <FormControl style={{ marginBottom: !drawer && '25px' }}>
-                <QueryInput name='startingAirport' updateState={updateState} />
-                <QueryInput
-                  name='endingAirport'
-                  updateState={updateState}
-                  toAnywhere={true}
-                />
-                <BasicDatePicker
-                  name='outboundDate'
-                  updateDate={updateDate}
-                  disableDates={disableDates}
-                />
-                <BasicDatePicker
-                  name='inboundDate'
-                  updateDate={updateDate}
-                  disableForOneWay={value.oneWay}
-                  disableDates={disableDates}
-                />
-                <div style={{ margin: '0 auto' }}>
-                  <CheckBox
-                    anytimeCheckbox={anytimeCheckbox}
-                    OneWayCheckBox={handleOneWayCheckBox}
-                  />
-                </div>
-              </FormControl>
-            </Paper>
-            {drawer ? (
-              <Button
-                startIcon={<SearchIcon />}
-                onClick={handleSubmit}
-                size='large'
-                variant='contained'
-                color='secondary'
-                style={{
-                  marginTop: 20,
-                  marginBottom: 20,
-                  borderRadius: 20,
-                }}>
-                Let's Go!
-              </Button>
-            ) : (
-              <Button
-                startIcon={<SearchIcon />}
-                onClick={handleSubmit}
-                variant='contained'
-                color='secondary'
-                style={{
-                  marginTop: -20,
-                  borderRadius: 20,
-                }}>
-                Let's Go!
-              </Button>
-            )}
+    <div className={classes.formWrapper}>
+      <Paper elevation={drawer ? 0 : 3} className={classes.formDisplay}>
+        <FormControl className={classes.formContainer}>
+          <QueryInput
+            name='startingAirport'
+            updateState={updateState}
+            error={errors.starting}
+          />
+          <QueryInput
+            name='endingAirport'
+            updateState={updateState}
+            toAnywhere={noDestinationPicker ? true : false}
+            error={errors.ending}
+          />
+          <BasicDatePicker
+            name='outboundDate'
+            updateDate={updateDate}
+            disableDates={disableDates}
+            error={errors.outbound}
+          />
+          <BasicDatePicker
+            name='inboundDate'
+            updateDate={updateDate}
+            disableForOneWay={value.oneWay}
+            disableDates={disableDates}
+            error={errors.inbound}
+          />
+          <div className={classes.checkboxWrapper}>
+            <CheckBox
+              anytimeCheckbox={anytimeCheckbox}
+              OneWayCheckBox={handleOneWayCheckBox}
+              error={errors.ending}
+            />
           </div>
-        ) : (
-          <>
-            <Paper
-              elevation={3}
-              style={{
-                maxWidth: '70%',
-                minWidth: 370,
-                margin: '0 auto',
-                paddingTop: 5,
-                borderRadius: 15,
-              }}>
-              <FormControl style={{ marginBottom: 25 }}>
-                <QueryInput name='startingAirport' updateState={updateState} />
-                <QueryInput name='endingAirport' updateState={updateState} />
-                <BasicDatePicker
-                  name='outboundDate'
-                  updateDate={updateDate}
-                  disableDates={disableDates}
-                />
-                <BasicDatePicker
-                  name='inboundDate'
-                  updateDate={updateDate}
-                  disableForOneWay={value.oneWay}
-                  disableDates={disableDates}
-                />
-                <div style={{ margin: '0 auto' }}>
-                  <CheckBox
-                    anytimeCheckbox={anytimeCheckbox}
-                    OneWayCheckBox={handleOneWayCheckBox}
-                  />
-                </div>
-              </FormControl>
-            </Paper>
-            <Button
-              startIcon={<SearchIcon />}
-              onClick={handleSubmit}
-              variant='contained'
-              color='primary'
-              style={{
-                marginTop: -20,
-                borderRadius: 20,
-              }}>
-              Let's Go!
-            </Button>
-          </>
-        )
-      ) : // ERRORS FORM BELOW
-      noDestinationPicker ? (
-        <>
-          <Paper
-            elevation={3}
-            style={{
-              maxWidth: '70%',
-              minWidth: 370,
-              margin: '0 auto',
-              paddingTop: 5,
-              borderRadius: 15,
-            }}>
-            <FormControl style={{ marginBottom: 25 }}>
-              <QueryInput
-                name='startingAirport'
-                updateState={updateState}
-                error={errors.starting}
-              />
-              <QueryInput
-                name='endingAirport'
-                updateState={updateState}
-                toAnywhere={true}
-                error={errors.ending}
-              />
-              <BasicDatePicker
-                name='outboundDate'
-                updateDate={updateDate}
-                disableDates={disableDates}
-                error={errors.outbound}
-              />
-              <BasicDatePicker
-                name='inboundDate'
-                updateDate={updateDate}
-                disableForOneWay={value.oneWay}
-                disableDates={disableDates}
-                error={errors.inbound}
-              />
-              <div style={{ margin: '0 auto' }}>
-                <CheckBox
-                  anytimeCheckbox={anytimeCheckbox}
-                  OneWayCheckBox={handleOneWayCheckBox}
-                  error={errors.ending}
-                />
-              </div>
-            </FormControl>
-          </Paper>
-          <Button
-            startIcon={<SearchIcon />}
-            onClick={handleSubmit}
-            variant='contained'
-            color='secondary'
-            style={{
-              marginTop: -20,
-              borderRadius: 20,
-            }}>
-            Let's Go!
-          </Button>
-        </>
-      ) : (
-        <>
-          <Paper
-            elevation={3}
-            style={{
-              maxWidth: '70%',
-              minWidth: 370,
-              margin: '0 auto',
-              paddingTop: 5,
-              borderRadius: 15,
-            }}>
-            <FormControl style={{ marginBottom: 25 }}>
-              <QueryInput
-                name='startingAirport'
-                updateState={updateState}
-                error={errors.starting}
-              />
-              <QueryInput
-                name='endingAirport'
-                updateState={updateState}
-                error={errors.ending}
-              />
-              <BasicDatePicker
-                name='outboundDate'
-                updateDate={updateDate}
-                disableDates={disableDates}
-                error={errors.outbound}
-              />
-              <BasicDatePicker
-                name='inboundDate'
-                updateDate={updateDate}
-                disableForOneWay={value.oneWay}
-                disableDates={disableDates}
-                error={errors.inbound}
-              />
-              <div style={{ margin: '0 auto' }}>
-                <CheckBox
-                  anytimeCheckbox={anytimeCheckbox}
-                  OneWayCheckBox={handleOneWayCheckBox}
-                />
-              </div>
-            </FormControl>
-          </Paper>
-          <Button
-            startIcon={<SearchIcon />}
-            onClick={handleSubmit}
-            variant='contained'
-            color='primary'
-            style={{
-              marginTop: -20,
-              borderRadius: 20,
-            }}>
-            Let's Go!
-          </Button>
-        </>
-      )}
-    </>
+        </FormControl>
+      </Paper>
+      <Button
+        startIcon={<SearchIcon />}
+        onClick={handleSubmit}
+        variant='contained'
+        color={noDestinationPicker ? 'secondary' : 'primary'}
+        size={drawer ? 'large' : 'medium'}
+        className={classes.formSearchButton}>
+        Let's Go!
+      </Button>
+    </div>
   );
 }

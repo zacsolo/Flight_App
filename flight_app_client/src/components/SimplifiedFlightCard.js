@@ -12,7 +12,7 @@ import {
   InfoContainer,
   Actions,
   Graph,
-} from './StylesSimpleFlightCard';
+} from './styles/StyledSimpleFlightCard';
 
 export default function SimplifiedFlightCard({
   flight: f,
