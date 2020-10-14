@@ -1,7 +1,4 @@
 import React from 'react';
-
-import CardContent from '@material-ui/core/CardContent';
-
 import Typography from '@material-ui/core/Typography';
 import ShoppingCartOutlinedIcon from '@material-ui/icons/ShoppingCartOutlined';
 import moment from 'moment';
@@ -9,94 +6,60 @@ import SaveFlightButton from './SaveFlightButton';
 import PriceGraph from './PriceGraph';
 import {
   BuyButton,
-  DateContainer,
+  Date,
   FlightCard,
   TitleContainer,
   InfoContainer,
-  ActionsContainer,
+  Actions,
   Graph,
 } from './StylesSimpleFlightCard';
 
 export default function SimplifiedFlightCard({
-  flight: {
-    price,
-    direct,
-    departureDate,
-    outboundCarrierName,
-    returnDate,
-    inboundCarrierName,
-    outboundOrigin,
-    outboundDestination,
-    inboundOrigin,
-    inboundDestination,
-    cityName,
-  },
+  flight: f,
   saved,
   removeSingleFlight,
 }) {
-  //Passing this object to the saveflight button
-  const flight = {
-    price,
-    direct,
-    departureDate,
-    outboundCarrierName,
-    returnDate,
-    inboundCarrierName,
-    outboundOrigin,
-    outboundDestination,
-    inboundOrigin,
-    inboundDestination,
-    cityName,
-  };
-
   return (
     <FlightCard elevation={3}>
       <TitleContainer>
         <Typography variant='subtitle1' color='textSecondary'>
-          from {outboundOrigin.split(',')[0]}
+          from {f.outboundOrigin.split(',')[0]}
         </Typography>
-        <Typography variant={cityName.length < 10 ? 'h4' : 'h5'}>
-          {cityName}
+        <Typography variant={f.cityName.length < 10 ? 'h4' : 'h5'}>
+          {f.cityName}
         </Typography>
-
         <Typography variant='caption' color='textSecondary'>
-          {returnDate ? 'Round-trip' : 'One-way'}
+          {f.returnDate ? 'Round-trip' : 'One-way'}
         </Typography>
-
-        <DateContainer>
-          {returnDate ? (
-            <Typography variant='subtitle2' color='textSecondary'>
-              {moment(departureDate).format('llll').split(', 202')[0]} -{' '}
-              {moment(returnDate).format('llll').split(', 202')[0]}
-            </Typography>
-          ) : (
-            <Typography variant='subtitle2' color='textSecondary'>
-              {moment(departureDate).format('llll').split(', 202')[0]}
-            </Typography>
-          )}
-        </DateContainer>
+        <Date>
+          <Typography variant='subtitle2' color='textSecondary'>
+            {moment(f.departureDate).format('llll').split(', 202')[0]}
+            {f.returnDate &&
+              `- ${moment(f.returnDate).format('llll').split(', 202')[0]}`}
+          </Typography>
+        </Date>
       </TitleContainer>
       <InfoContainer>
         <Graph>
           <PriceGraph
-            oldPrice={price}
+            oldPrice={f.price}
             newPrice={
               Math.random() > 0.5
-                ? price + Math.floor(Math.random() * 100)
-                : price - Math.floor(Math.random() * 100)
+                ? f.price + Math.floor(Math.random() * 100)
+                : f.price - Math.floor(Math.random() * 100)
             }
           />
         </Graph>
-        <ActionsContainer>
+        <Actions>
           <BuyButton color='primary'>
             <ShoppingCartOutlinedIcon fontSize='large' />
           </BuyButton>
           <SaveFlightButton
-            flight={flight}
+            flight={{ ...f }}
             saved={saved}
             removeSingleFlight={removeSingleFlight}
           />
-        </ActionsContainer>
+        </Actions>
       </InfoContainer>
     </FlightCard>
   );

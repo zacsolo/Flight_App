@@ -1,7 +1,6 @@
 import { styled } from '@material-ui/core/styles';
 import Card from '@material-ui/core/Card';
 import CardContent from '@material-ui/core/CardContent';
-
 import Button from '@material-ui/core/Button';
 
 export const BuyButton = styled(Button)({
@@ -9,7 +8,7 @@ export const BuyButton = styled(Button)({
   marginRight: '20px',
 });
 
-export const DateContainer = styled(CardContent)({
+export const Date = styled(CardContent)({
   padding: '32px 0 0 0 ',
   '&:last-child': {
     paddingBottom: 10,
@@ -46,6 +45,6 @@ export const Graph = styled(CardContent)({
   },
 });
 
-export const ActionsContainer = styled(CardContent)({
+export const Actions = styled(CardContent)({
   padding: '16px',
 });
