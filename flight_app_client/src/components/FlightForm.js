@@ -1,47 +1,24 @@
-import React, { useState } from 'react';
+import React, { useState, useContext } from 'react';
+import { GlobalSearchStateContext } from '../utils/context';
 import QueryInput from '../components/QueryInput';
 import BasicDatePicker from './BasicDatePicker';
 import Button from '@material-ui/core/Button';
 import CheckBox from '../components/CheckBox';
-import { makeStyles } from '@material-ui/core';
-import { validateFlightAnywhere } from '../utils/validFlight';
-import { validateFlightWithDest } from '../utils/validFlight';
+import { useStyles } from './styles/StyledFlightForm';
+import { validateFlight } from '../utils/validFlight';
 import { FormControl, Paper } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
 
-const useStyles = makeStyles({
-  formWrapper: {
-    textAlign: (drawer) => drawer && 'center',
-    marginTop: (drawer) => drawer && '16px',
-  },
-  formDisplay: {
-    maxWidth: (drawer) => (drawer ? '100%' : '70%'),
-    minWidth: (drawer) => (drawer ? '100%' : '370px'),
-    margin: '0 auto',
-    paddingTop: 5,
-    borderRadius: 15,
-  },
-  formContainer: {
-    marginBottom: (drawer) => !drawer && '25px',
-  },
-  checkboxWrapper: { margin: '0 auto' },
-  formSearchButton: {
-    marginTop: (drawer) => (drawer ? 20 : -20),
-    borderRadius: 20,
-    marginBottom: (drawer) => (drawer ? 20 : 0),
-  },
-});
-
-export default function FlightForm({
-  searchForFlights,
-  noDestinationPicker,
-  toggleOpen,
-  drawer,
-}) {
-  let drawerOpen = drawer ? true : false;
-  const classes = useStyles(drawerOpen);
+export default function FlightForm({ searchForFlights, toggleOpen }) {
+  //-Context
+  const { searchDrawerOpen, adventureMode } = useContext(
+    GlobalSearchStateContext
+  );
   //
-  //State_____________
+  //-Styles
+  const classes = useStyles(searchDrawerOpen);
+  //
+  //-Local State
   const [value, setValue] = useState({
     startingAirport: '',
     endingAirport: '',
@@ -51,144 +28,80 @@ export default function FlightForm({
   });
   const [disableDates, setDisableDates] = useState(false);
   const [errors, setErrors] = useState([]);
-  //_______________
-
-  //---CAN PROBABLY REFACTOR---
-  //---These two together---
-  const updateState = (inputPlace, name) => {
-    const newPlace = inputPlace[0].placeId;
-    setValue({ ...value, [name]: newPlace });
-  };
-  const updateDate = (inputDate, name) => {
-    setValue({ ...value, [name]: inputDate });
-  };
   //
+  //-Event Handlers
+  const updateState = (inputData, name) => {
+    const newPlace = inputData[0].placeId;
+    setValue({
+      ...value,
+      [name]: name.includes('Date') ? inputData : newPlace,
+    });
+  };
 
-  const anytimeCheckbox = (checked) => {
-    if (value.oneWay) {
-      setDisableDates(!disableDates);
-      checked
-        ? setValue({
-            ...value,
-            outboundDate: 'anytime',
-            inboundDate: '',
-          })
-        : setValue({ ...value, outboundDate: '', inboundDate: '' });
-    } else if (!value.oneWay) {
-      setDisableDates(!disableDates);
-      checked
-        ? setValue({
-            ...value,
-            outboundDate: 'anytime',
-            inboundDate: 'anytime',
-          })
-        : setValue({ ...value, outboundDate: '', inboundDate: '' });
-    }
+  const handleAnytimeCheckbox = (checked) => {
+    const { oneWay, inboundDate } = value;
+    setDisableDates(!disableDates);
+    setValue({
+      ...value,
+      outboundDate: checked ? 'anytime' : '',
+      inboundDate: oneWay ? inboundDate : checked ? 'anytime' : '',
+    });
   };
 
   const handleOneWayCheckBox = (checked) => {
-    console.log('DATES DISABLED', disableDates);
-    console.log('checked', checked);
-    if (disableDates) {
-      if (checked) {
-        setValue({
-          ...value,
-          oneWay: checked,
-          inboundDate: '',
-          outboundDate: 'anytime',
-        });
-      } else {
-        setValue({
-          ...value,
-          oneWay: checked,
-          inboundDate: 'anytime',
-          outboundDate: 'anytime',
-        });
-      }
-    } else {
-      setValue({
-        ...value,
-        oneWay: checked,
-      });
-    }
+    setValue({
+      ...value,
+      oneWay: checked,
+      inboundDate: checked ? '' : 'anytime',
+      outboundDate: 'anytime',
+    });
   };
 
   const handleSubmit = () => {
-    //FOR ANYWHERE FLIGHT
-    if (noDestinationPicker) {
-      const { errors, valid } = validateFlightAnywhere(
-        value.startingAirport,
-        value.outboundDate,
-        value.inboundDate,
-        value.oneWay
-      );
-      if (valid) {
-        searchForFlights(value);
-        if (toggleOpen) {
-          toggleOpen();
-        }
-      } else {
-        setErrors(errors);
-        return;
-      }
+    const { errors, valid } = validateFlight(adventureMode, { ...value });
+    if (valid) {
+      searchForFlights(value);
+      toggleOpen && toggleOpen();
+    } else {
+      setErrors(errors);
     }
-    //FOR FLIGHT WITH A CHOSEN DESTINATION
-    else {
-      const { errors, valid } = validateFlightWithDest(
-        value.startingAirport,
-        value.endingAirport,
-        value.outboundDate,
-        value.inboundDate,
-        value.oneWay
-      );
-      if (valid) {
-        searchForFlights(value);
-        if (toggleOpen) {
-          toggleOpen();
-        }
-      } else {
-        console.log(errors);
-        setErrors(errors);
-        return;
-      }
-    }
-
-    searchForFlights(value);
   };
+  //
 
   return (
     <div className={classes.formWrapper}>
-      <Paper elevation={drawer ? 0 : 3} className={classes.formDisplay}>
+      <Paper
+        elevation={searchDrawerOpen ? 0 : 3}
+        className={classes.formDisplay}>
         <FormControl className={classes.formContainer}>
           <QueryInput
             name='startingAirport'
             updateState={updateState}
-            error={errors.starting}
+            error={errors.startingAirport}
           />
           <QueryInput
             name='endingAirport'
             updateState={updateState}
-            toAnywhere={noDestinationPicker ? true : false}
-            error={errors.ending}
+            toAnywhere={adventureMode ? true : false}
+            error={errors.endingAirport}
           />
           <BasicDatePicker
             name='outboundDate'
-            updateDate={updateDate}
+            updateDate={updateState}
             disableDates={disableDates}
-            error={errors.outbound}
+            error={errors.outboundDate}
           />
           <BasicDatePicker
             name='inboundDate'
-            updateDate={updateDate}
+            updateDate={updateState}
             disableForOneWay={value.oneWay}
             disableDates={disableDates}
-            error={errors.inbound}
+            error={errors.inboundDate}
           />
           <div className={classes.checkboxWrapper}>
             <CheckBox
-              anytimeCheckbox={anytimeCheckbox}
+              anytimeCheckbox={handleAnytimeCheckbox}
               OneWayCheckBox={handleOneWayCheckBox}
-              error={errors.ending}
             />
           </div>
         </FormControl>
@@ -197,8 +110,8 @@ export default function FlightForm({
         startIcon={<SearchIcon />}
         onClick={handleSubmit}
         variant='contained'
-        color={noDestinationPicker ? 'secondary' : 'primary'}
-        size={drawer ? 'large' : 'medium'}
+        color={adventureMode ? 'secondary' : 'primary'}
+        size={searchDrawerOpen ? 'large' : 'medium'}
         className={classes.formSearchButton}>
         Let's Go!
       </Button>
