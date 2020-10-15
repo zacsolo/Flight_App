@@ -7,11 +7,11 @@ export default function CheckboxLabels({ anytimeCheckbox, OneWayCheckBox }) {
   const [anytime, setAnytime] = useState(false);
   const [oneWay, setOneWay] = useState(false);
 
-  const handleAnytime = (e) => {
+  const handleAnytime = () => {
     anytimeCheckbox(!anytime);
     setAnytime(!anytime);
   };
-  const handleOneWay = (e) => {
+  const handleOneWay = () => {
     OneWayCheckBox(!oneWay);
     setOneWay(!oneWay);
   };

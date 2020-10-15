@@ -2,13 +2,13 @@ import React, { useState, useContext } from 'react';
 import { GlobalSearchStateContext } from '../utils/context';
 import QueryInput from '../components/QueryInput';
 import BasicDatePicker from './BasicDatePicker';
-import Button from '@material-ui/core/Button';
 import CheckBox from '../components/CheckBox';
-import { useStyles } from './styles/StyledFlightForm';
 import { validateFlight } from '../utils/validFlight';
-import { FormControl, Paper } from '@material-ui/core';
+import { useStyles } from './styles/StyledFlightForm';
+//
+import { FormControl, Paper, Button } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
-
+//
 export default function FlightForm({ searchForFlights, toggleOpen }) {
   //-Context
   const { searchDrawerOpen, adventureMode } = useContext(
@@ -67,7 +67,7 @@ export default function FlightForm({ searchForFlights, toggleOpen }) {
     }
   };
   //
-
+  //-Render
   return (
     <div className={classes.formWrapper}>
       <Paper
