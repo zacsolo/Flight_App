@@ -40,9 +40,7 @@ ReactDOM.render(
     <GlobalSearchStateContextProvider>
       <MuiPickersUtilsProvider utils={MomentUtils}>
         <ApolloProvider client={client}>
-          <React.StrictMode>
-            <App />
-          </React.StrictMode>
+          <App />
         </ApolloProvider>
       </MuiPickersUtilsProvider>
     </GlobalSearchStateContextProvider>

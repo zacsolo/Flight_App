@@ -21,7 +21,6 @@ export default function PlaceAutocomplete({
   useEffect(() => {
     if (value) {
       if (inputValue.includes(value.placeName)) {
-        console.log(value, name);
         updateFormState(value, name);
         return;
       }
