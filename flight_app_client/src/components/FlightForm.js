@@ -1,6 +1,6 @@
 import React, { useState, useContext } from 'react';
 import { GlobalSearchStateContext } from '../utils/context';
-import QueryInput from '../components/QueryInput';
+
 import BasicDatePicker from './BasicDatePicker';
 import CheckBox from '../components/CheckBox';
 import { validateFlight } from '../utils/validFlight';
@@ -8,6 +8,8 @@ import { useStyles } from './styles/StyledFlightForm';
 //
 import { FormControl, Paper, Button } from '@material-ui/core';
 import SearchIcon from '@material-ui/icons/Search';
+import PlaceAutocomplete from './PlaceAutocomplete.js';
+
 //
 export default function FlightForm({ searchForFlights, toggleOpen }) {
   //-Context
@@ -31,7 +33,8 @@ export default function FlightForm({ searchForFlights, toggleOpen }) {
   //
   //-Event Handlers
   const updateState = (inputData, name) => {
-    const newPlace = inputData[0].placeId;
+    // const newPlace = inputData[0].placeId;
+    const newPlace = inputData.placeId;
     setValue({
       ...value,
       [name]: name.includes('Date') ? inputData : newPlace,
@@ -74,14 +77,14 @@ export default function FlightForm({ searchForFlights, toggleOpen }) {
         elevation={searchDrawerOpen ? 0 : 3}
         className={classes.formDisplay}>
         <FormControl className={classes.formContainer}>
-          <QueryInput
+          <PlaceAutocomplete
             name='startingAirport'
-            updateState={updateState}
+            updateFormState={updateState}
             error={errors.startingAirport}
           />
-          <QueryInput
+          <PlaceAutocomplete
             name='endingAirport'
-            updateState={updateState}
+            updateFormState={updateState}
             toAnywhere={adventureMode ? true : false}
             error={errors.endingAirport}
           />

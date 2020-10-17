@@ -1,30 +1,19 @@
 import React, { useContext } from 'react';
-import { makeStyles } from '@material-ui/core/styles';
-import AppBar from '@material-ui/core/AppBar';
-import Toolbar from '@material-ui/core/Toolbar';
-import Typography from '@material-ui/core/Typography';
-
-import IconButton from '@material-ui/core/IconButton';
-import SearchIcon from '@material-ui/icons/Search';
-import { Switch } from '@material-ui/core';
-import FormControlLabel from '@material-ui/core/FormControlLabel';
 import { GlobalSearchStateContext } from '../utils/context';
 import { Link } from 'react-router-dom';
 import { useLocation } from 'react-router-dom';
-import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import { useStyles } from './styles/StyledNavBar';
+//
+//MUI
+import AppBar from '@material-ui/core/AppBar';
+import Toolbar from '@material-ui/core/Toolbar';
+import Typography from '@material-ui/core/Typography';
+import IconButton from '@material-ui/core/IconButton';
+import SearchIcon from '@material-ui/icons/Search';
+import Switch from '@material-ui/core/Switch';
 import Badge from '@material-ui/core/Badge';
-
-const useStyles = makeStyles((theme) => ({
-  root: {
-    flexGrow: 1,
-  },
-  menuButton: {
-    marginRight: theme.spacing(1),
-  },
-  title: {
-    flexGrow: 1,
-  },
-}));
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import FormControlLabel from '@material-ui/core/FormControlLabel';
 
 export default function NavBar() {
   const { pathname } = useLocation();
@@ -33,18 +22,17 @@ export default function NavBar() {
     adventureMode,
     firstSearch,
     setAdventureMode,
-    setSearchDrawerOpen,
-    setFirstSearch,
     isLoggedIn,
     checkedSavedFlights,
     setLoginModalOpen,
+    setSearchDrawerOpen,
+    setFirstSearch,
   } = useContext(GlobalSearchStateContext);
 
   const restartSearch = () => {
     setFirstSearch(true);
     setAdventureMode(!adventureMode);
   };
-  console.log(checkedSavedFlights);
 
   return (
     <div className={classes.root}>
@@ -52,6 +40,7 @@ export default function NavBar() {
         <Toolbar>
           <Typography variant='h6' className={classes.title}>
             {pathname !== '/search' ? (
+              // we are on the home page
               <IconButton
                 edge='end'
                 color='inherit'
@@ -62,6 +51,7 @@ export default function NavBar() {
                 <SearchIcon />
               </IconButton>
             ) : (
+              // we are not on the home page
               <FormControlLabel
                 control={
                   <Switch
@@ -75,7 +65,9 @@ export default function NavBar() {
               />
             )}
           </Typography>
-          {!firstSearch && pathname === '/search' ? (
+          {/* // */}
+          {/* For the follow up search icon on the right */}
+          {!firstSearch && pathname === '/search' && (
             <IconButton
               edge='end'
               color='inherit'
@@ -83,7 +75,9 @@ export default function NavBar() {
               onClick={() => setSearchDrawerOpen(true)}>
               <SearchIcon />
             </IconButton>
-          ) : null}
+          )}
+          {/* // */}
+          {/* For the Profile Button on the far right */}
           {isLoggedIn ? (
             <IconButton edge='end' color='inherit' component={Link} to='/user'>
               {checkedSavedFlights ? (

@@ -22,6 +22,8 @@ const GlobalSearchStateContextProvider = (props) => {
       setFirstSearch,
       isLoggedIn,
       setIsLoggedIn,
+      //After a user saves a flight, this is set to false,
+      //unitl they check it, by visiting their profile
       checkedSavedFlights,
       setCheckedSavedFlights,
       loginModalOpen,
