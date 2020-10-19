@@ -33,7 +33,6 @@ export default function FlightForm({ searchForFlights, toggleOpen }) {
   //
   //-Event Handlers
   const updateState = (inputData, name) => {
-    // const newPlace = inputData[0].placeId;
     const newPlace = inputData.placeId;
     setValue({
       ...value,

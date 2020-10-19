@@ -53,7 +53,6 @@ export default function LoginPage() {
   };
 
   if (data) {
-    console.log(data);
     localStorage.setItem('userToken', data.login.token);
   }
 

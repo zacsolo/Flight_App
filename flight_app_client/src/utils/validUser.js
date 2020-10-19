@@ -6,34 +6,46 @@ export const validateUserSignUp = (
   confirmPassword
 ) => {
   let errors = {};
+  let message = {};
 
   if (!firstName || firstName.trim() === '') {
-    errors.firstName = 'cannot be empty';
+    message.firstName = 'cannot be empty';
+    errors.firstName = true;
   }
   if (!lastName || lastName.trim() === '') {
-    errors.lastName = 'cannot be empty';
-  }
-  if (!email || email.trim() === '') {
-    errors.email = 'cannot be empty';
+    message.lastName = 'cannot be empty';
+    errors.lastName = true;
   }
   const regEx = /^([0-9a-zA-Z]([-.\w]*[0-9a-zA-Z])*@([0-9a-zA-Z][-\w]*[0-9a-zA-Z]\.)+[a-zA-Z]{2,9})$/;
   if (!email.match(regEx)) {
-    errors.email = 'must be a valid email address';
+    message.email = 'must be a valid email address';
+    errors.email = true;
+  }
+  if (!email || email.trim() === '') {
+    message.email = 'cannot be empty';
+    errors.email = true;
   }
   if (!password || password.trim() === '') {
-    errors.password = 'cannot be empty';
+    message.password = 'cannot be empty';
+    errors.password = true;
   }
   if (!confirmPassword || confirmPassword.trim() === '') {
-    errors.confirmPassword = 'cannot be empty';
+    message.confirmPassword = 'cannot be empty';
+    errors.confirmPassword = true;
   }
 
   if (password && confirmPassword) {
     if (password !== confirmPassword) {
-      errors.password = 'passwords must match';
+      message.password = 'passwords must match';
+      errors.password = true;
+      errors.confirmPassword = true;
     }
   }
 
+  message = [...new Set(Object.values(message))];
+
   return {
+    message,
     errors,
     valid: Object.keys(errors).length >= 1 ? false : true,
   };

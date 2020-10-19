@@ -1,22 +1,19 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { useMutation } from '@apollo/client';
 import { useHistory } from 'react-router-dom';
-
+import { GlobalSearchStateContext } from '../utils/context';
+import ControlUserSubmit from '../utils/ControlUserSubmit';
+//
+//MUI
 import TextField from '@material-ui/core/TextField';
 import Button from '@material-ui/core/Button';
-import { validateUserSignUp } from '../utils/validUser';
-import { SIGN_UP } from '../gql/UserMutations';
-import { FormHelperText, Typography } from '@material-ui/core';
-import { GlobalSearchStateContext } from '../utils/context';
+import { FormHelperText } from '@material-ui/core';
 
 export default function SignUpPage() {
-  const {
-    isLoggedIn,
-    setIsLoggedIn,
-    setFirstSearch,
-    setLoginModalOpen,
-  } = useContext(GlobalSearchStateContext);
-  const [signup, { data }] = useMutation(SIGN_UP);
+  const history = useHistory();
+  const { isLoggedIn, setIsLoggedIn, setFirstSearch } = useContext(
+    GlobalSearchStateContext
+  );
+
   const [formState, setFormState] = useState({
     firstName: '',
     lastName: '',
@@ -24,8 +21,8 @@ export default function SignUpPage() {
     password: '',
     confirmPassword: '',
   });
-  const [errors, setErrors] = useState();
-  const history = useHistory();
+
+  const { handleSubmit, data, errors, message } = ControlUserSubmit(formState);
 
   useEffect(() => {
     if (data || isLoggedIn) {
@@ -38,167 +35,86 @@ export default function SignUpPage() {
   const handleChange = (e) => {
     setFormState({ ...formState, [e.target.name]: e.target.value });
   };
-  //
-  //ERROR HANDLING FOR BOTH PAGES
-  //Already created a haleper function in Utils
-  //to help validate. Will be getting some info from the back end, would be ideal
-  //to incorperate that into the helperText for each input
 
-  const handleSubmit = (e) => {
-    e.preventDefault();
-    const { firstName, lastName, email, password, confirmPassword } = formState;
-    const { errors, valid } = validateUserSignUp(
-      firstName,
-      lastName,
-      email,
-      password,
-      confirmPassword
-    );
-
-    if (valid) {
-      console.log('INPUT IS VALID');
-      console.log({ firstName, lastName, email, password, confirmPassword });
-      signup({
-        variables: { firstName, lastName, email, password, confirmPassword },
-      })
-        .then((data) => {
-          console.log(data);
-          // localStorage.setItem('userToken', data.signup.token);
-          setLoginModalOpen(false);
-        })
-        .catch((error) => {
-          console.log('getting errors', { errors });
-          setErrors({ ...errors, graphQL: error });
-        });
-    } else {
-      setErrors(errors);
-      console.log('getting errors', { errors });
-    }
-  };
   if (data) {
     localStorage.setItem('userToken', data.signup.token);
   }
 
+  const errorMessage = () => {
+    return message.map((err) => (
+      <FormHelperText error key={err}>
+        {err}
+      </FormHelperText>
+    ));
+  };
+
+  const emailErrors = () => {
+    if (errors) {
+      if (errors.email) {
+        return true;
+      } else if (errors.graphQL) {
+        return true;
+      }
+    }
+  };
+
   return (
-    <>
-      {errors ? (
-        <form
-          onSubmit={handleSubmit}
-          autoComplete='off'
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-            margin: 'auto',
-            paddingTop: '20px',
-          }}>
-          <TextField
-            error={errors.firstName && true}
-            helperText={errors.firstName && `${errors.firstName}`}
-            id='standard-basic'
-            label='first name'
-            name='firstName'
-            value={formState.firstName}
-            onChange={(e) => handleChange(e)}
-          />
-          <TextField
-            error={errors.lastName && true}
-            helperText={errors.lastName && `${errors.lastName}`}
-            id='standard-basic'
-            label='last name'
-            name='lastName'
-            value={formState.lastName}
-            onChange={(e) => handleChange(e)}
-          />
-          <TextField
-            error={errors.email || errors.graphQL ? true : false}
-            helperText={errors.email && `${errors.email}`}
-            id='standard-basic'
-            label='email'
-            name='email'
-            value={formState.email}
-            onChange={(e) => handleChange(e)}
-          />
-          <TextField
-            error={errors.password && true}
-            helperText={errors.password && `${errors.password}`}
-            id='standard-basic'
-            label='password'
-            name='password'
-            type='password'
-            value={formState.password}
-            onChange={(e) => handleChange(e)}
-          />
-          <TextField
-            error={errors.confirmPassword && true}
-            helperText={errors.confirmPassword && `${errors.confirmPassword}`}
-            id='standard-basic'
-            label='confirm password'
-            name='confirmPassword'
-            type='password'
-            value={formState.confirmPassword}
-            onChange={(e) => handleChange(e)}
-          />
-          <FormHelperText error>
-            {errors.graphQL ? 'Email already taken' : null}
-          </FormHelperText>
-          <Button color='primary' type='submit' style={{ marginTop: '20px' }}>
-            Sign Up
-          </Button>
-        </form>
-      ) : (
-        <form
-          onSubmit={handleSubmit}
-          autoComplete='off'
-          style={{
-            display: 'flex',
-            flexDirection: 'column',
-            width: '100%',
-            margin: 'auto',
-            paddingTop: '20px',
-          }}>
-          <TextField
-            id='standard-basic'
-            label='first name'
-            name='firstName'
-            value={formState.firstName}
-            onChange={(e) => handleChange(e)}
-          />
-          <TextField
-            id='standard-basic'
-            label='last name'
-            name='lastName'
-            value={formState.lastName}
-            onChange={(e) => handleChange(e)}
-          />
-          <TextField
-            id='standard-basic'
-            label='email'
-            name='email'
-            value={formState.email}
-            onChange={(e) => handleChange(e)}
-          />
-          <TextField
-            id='standard-basic'
-            label='password'
-            name='password'
-            type='password'
-            value={formState.password}
-            onChange={(e) => handleChange(e)}
-          />
-          <TextField
-            id='standard-basic'
-            label='confirm password'
-            name='confirmPassword'
-            type='password'
-            value={formState.confirmPassword}
-            onChange={(e) => handleChange(e)}
-          />
-          <Button color='primary' type='submit' style={{ marginTop: '20px' }}>
-            Sign Up
-          </Button>
-        </form>
-      )}
-    </>
+    <form
+      onSubmit={handleSubmit}
+      autoComplete='off'
+      style={{
+        display: 'flex',
+        flexDirection: 'column',
+        width: '100%',
+        margin: 'auto',
+        paddingTop: '20px',
+      }}>
+      <TextField
+        error={errors && errors.firstName}
+        id='standard-basic'
+        label='first name'
+        name='firstName'
+        value={formState.firstName}
+        onChange={(e) => handleChange(e)}
+      />
+      <TextField
+        error={errors && errors.lastName}
+        id='standard-basic'
+        label='last name'
+        name='lastName'
+        value={formState.lastName}
+        onChange={(e) => handleChange(e)}
+      />
+      <TextField
+        error={emailErrors()}
+        id='standard-basic'
+        label='email'
+        name='email'
+        value={formState.email}
+        onChange={(e) => handleChange(e)}
+      />
+      <TextField
+        error={errors && errors.password}
+        id='standard-basic'
+        label='password'
+        name='password'
+        type='password'
+        value={formState.password}
+        onChange={(e) => handleChange(e)}
+      />
+      <TextField
+        error={errors && errors.confirmPassword}
+        id='standard-basic'
+        label='confirm password'
+        name='confirmPassword'
+        type='password'
+        value={formState.confirmPassword}
+        onChange={(e) => handleChange(e)}
+      />
+      {errorMessage()}
+      <Button color='primary' type='submit' style={{ marginTop: '20px' }}>
+        Sign Up
+      </Button>
+    </form>
   );
 }
